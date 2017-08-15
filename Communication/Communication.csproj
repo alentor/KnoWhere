@@ -36,6 +36,8 @@
     <Compile Include="EnumDescGetter.cs" />
     <Compile Include="Language.cs" />
     <Compile Include="Location.cs" />
+    <Compile Include="APIClient.cs" />
+    <Compile Include="Response.cs" />
     <Compile Include="SuggestionType.cs" />
     <Compile Include="Places.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

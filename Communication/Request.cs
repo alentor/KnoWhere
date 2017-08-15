@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Communication
 {
     public class Request
     { 
         private DateTime TimeFrom { get; set; }
-
+        
         private DateTime TimeTo { get; set; }
 
         public Location UserLocation { get; set; }
@@ -23,7 +19,7 @@ namespace Communication
             get { return (Language)Enum.Parse(typeof(Language), language); }
             set { language = value.GetDisplayName(); }
         }
-        
+         
         public Request(TimeOfDay timeChosen)
         {
             TimeFrom = DateTime.Now;

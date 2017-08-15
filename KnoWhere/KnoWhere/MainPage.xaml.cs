@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Xamarin.Forms;
 using Communication;
 using Plugin.Geolocator;
+using Org.Json;
 
 namespace KnoWhere
 {
@@ -35,14 +36,14 @@ namespace KnoWhere
                 CreateAnswer(layout, SuggestionType.PlaceType, randomPlaceType);  
             }
 
-            private void CreatePlaceSuggestion(View layout , object placeResponse)
+            private void CreatePlaceSuggestion(View layout , Response response)
             {
                 // Casting view to layout panel
                 var stackLayout = layout as StackLayout;
 
                 // Setting random suggestion depended on placeType user chose
-                CreateQuestion(layout, SuggestionType.Place);
-                CreateAnswer(layout, SuggestionType.Place);  
+                CreateQuestion(layout, SuggestionType.Place, null, response);
+                CreateAnswer(layout, SuggestionType.Place, null, response);  
             }
 
             private void CreateTimeSuggestion(View layout)
@@ -55,7 +56,7 @@ namespace KnoWhere
                 CreateAnswer(layout, SuggestionType.Time);
             }
           
-            private void CreateAnswer(View layout, SuggestionType suggestionType, Enum randomPlaceType = null, object placeResponse = null)
+            private void CreateAnswer(View layout, SuggestionType suggestionType, Enum randomPlaceType = null, Response response = null)
             {
                 // Casting view to layout panel
                 var stackLayout = layout as StackLayout;
@@ -212,7 +213,7 @@ namespace KnoWhere
                 } 
             }
 
-            private void CreateQuestion(View layout, SuggestionType suggestionType, Enum randomPlaceType = null, object placeResponse = null)
+            private void CreateQuestion(View layout, SuggestionType suggestionType, Enum randomPlaceType = null, Response response = null)
             {
                 // Casting view to layout panel
                 var stackLayout = layout as StackLayout;
@@ -248,7 +249,7 @@ namespace KnoWhere
                 }
             }
          
-            private Enum GenerateTimeDependedPlaces(TimeOfDay timeChosen)
+            private Enum GetTimeDependedPlacesFromAPI(TimeOfDay timeChosen)
             {
 
                 // Getting placeTypes by time of the day
@@ -321,7 +322,7 @@ namespace KnoWhere
             {
                 button = (Button)sender;
                 DisableParent(button);
-                randomPlaceType = GenerateTimeDependedPlaces(timeChosen);
+                randomPlaceType = GetTimeDependedPlacesFromAPI(timeChosen);
                 CreatePlaceTypeSuggestion(MainPanel, randomPlaceType);
             }
 
@@ -335,7 +336,7 @@ namespace KnoWhere
                 button = (Button)sender;
                 DisableParent(button);
                 timeChosen = TimeOfDay.Night;
-                randomPlaceType = GenerateTimeDependedPlaces(timeChosen);
+                randomPlaceType = GetTimeDependedPlacesFromAPI(timeChosen);
                 CreatePlaceTypeSuggestion(MainPanel, randomPlaceType);
             }
 
@@ -344,7 +345,7 @@ namespace KnoWhere
                 button = (Button)sender;
                 DisableParent(button);
                 timeChosen = TimeOfDay.Afternoon;
-                randomPlaceType = GenerateTimeDependedPlaces(timeChosen);
+                randomPlaceType = GetTimeDependedPlacesFromAPI(timeChosen);
                 CreatePlaceTypeSuggestion(MainPanel, randomPlaceType);
             }
 
@@ -353,7 +354,7 @@ namespace KnoWhere
                 button = (Button)sender;
                 DisableParent(button);
                 timeChosen = TimeOfDay.Morning;
-                randomPlaceType = GenerateTimeDependedPlaces(timeChosen);
+                randomPlaceType = GetTimeDependedPlacesFromAPI(timeChosen);
                 CreatePlaceTypeSuggestion(MainPanel, randomPlaceType);
             }
 
@@ -365,6 +366,7 @@ namespace KnoWhere
                 double? longitude = null;
                 double? latitude = null;
 
+                // Getting user current location if GPS is on
                 if (CrossGeolocator.Current.IsGeolocationEnabled)
                 {
                     var position = await CrossGeolocator.Current.GetPositionAsync(null, null, false);
@@ -372,6 +374,7 @@ namespace KnoWhere
                     latitude = position.Latitude;
                 }
 
+                // Creating the request to send to the APIClient
                 var request = new Request(timeChosen)
                 {
                     Language = Language.Hebrew,
@@ -383,13 +386,20 @@ namespace KnoWhere
                        Longitude = longitude.Value
                     }
                 };
+
+                // Retrieving response from APIClient
+                var response = APIClient.CreateRequest(request);
+            
+                // Suggesting the response
+                CreatePlaceSuggestion(MainPanel, response);
+                
             }
          
             private void noBtn_Clicked(object sender, EventArgs e)
             {
                 button = (Button)sender;
                 DisableParent(button);
-                randomPlaceType = GenerateTimeDependedPlaces(timeChosen);
+                randomPlaceType = GetTimeDependedPlacesFromAPI(timeChosen);
                 CreatePlaceTypeSuggestion(MainPanel, randomPlaceType);
             }
 
