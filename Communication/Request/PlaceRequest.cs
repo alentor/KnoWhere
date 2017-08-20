@@ -7,7 +7,7 @@ namespace Communication
 
         public Location Location { get; set; }
 
-        public Language Language { get; set; }
+        public string Language { get; set; }
          
     }
 }

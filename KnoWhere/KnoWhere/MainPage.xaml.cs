@@ -216,11 +216,11 @@ namespace KnoWhere
                     longitude = position.Longitude;
                     latitude = position.Latitude;
                 }
-
+                
                 // Creating the request
                 var request = new PlaceRequest()
                 {
-                    Language = Language.Hebrew,
+                    Language = EnumExtensions.GetDisplayName(Language.English).ToString(),
                     Location = !(longitude.HasValue && latitude.HasValue) ? null :
                     new Location
                     {
