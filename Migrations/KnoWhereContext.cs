@@ -7,8 +7,7 @@ namespace Database
     public class KnowWhereContext : DbContext
     { 
             public DbSet<User> Users { get; set; }
-            public DbSet<UserSettings> UsersSettings { get; set; }
-            public DbSet<Range> Ranges { get; set; }
+            public DbSet<UserSettings> UsersSettings { get; set; } 
 
 
         private string DatabasePath { get; set; }

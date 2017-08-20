@@ -3,288 +3,143 @@ using System.Collections.Generic;
 using Xamarin.Forms;
 using Communication;
 using Plugin.Geolocator;
+using System.Threading.Tasks;
 
 namespace KnoWhere
 {
     public partial class MainPage : ContentPage
     {
 
-        #region Properties
+        private static List<Place> places { get; set; }
 
-            private static TimeOfDay timeChosen { get; set; }
-            private Enum randomPlaceType { get; set; }
-            private Button button { get; set; }
+        private int currentPlaceIndex = 0;
 
-        #endregion
 
         public MainPage()
         {
             InitializeComponent();
-            CreateTimeSuggestion(MainPanel);
+            Start();
+        }
+
+        public async void Start()
+        {
+            places = await GeneratePlaces();
+            CreatePlaceSuggestion(MainPanel);
         }
 
         #region Functions
         
-            private void CreatePlaceTypeSuggestion(View layout , Enum randomPlaceType)
+            private void CreatePlaceSuggestion(View layout)
             {
                 // Casting view to layout panel
                 var stackLayout = layout as StackLayout;
+                
+                var place = places[currentPlaceIndex];
 
-                // Setting random suggestion depended on time user chose
-                CreateQuestion(layout, SuggestionType.PlaceType, randomPlaceType);
-                CreateAnswer(layout, SuggestionType.PlaceType, randomPlaceType);  
+                Label suggestion = new Label
+                {
+                    Text = "How about " + place.Name + "?",
+                    Margin = 15
+                };
+
+                Image image = place.Image as Image;
+
+                Button nextBtn = new Button()
+                {
+                    Text = "Next",
+                    WidthRequest = 50
+                };
+
+                Button interestedBtn = new Button()
+                {
+                    Text = "Interested",
+                    WidthRequest = 50
+                };
+
+                List<View> buttons = new List<View>()
+                {
+                    nextBtn,
+                    interestedBtn,
+                };
+
+                // Subscribe to click event 
+                nextBtn.Clicked += NextBtn_Clicked;
+                interestedBtn.Clicked += interestedBtn_Clicked;
+
+                // Creating panel for the buttons
+                var buttonsLayout = new StackLayout()
+                {
+                    Padding = 15,
+                    Spacing = 10,
+                    Orientation = StackOrientation.Horizontal,
+                    HorizontalOptions = LayoutOptions.End
+                };
+
+                // Adding buttons to the stackPanel
+                AddItemsToView(buttonsLayout, buttons);
+                stackLayout.Children.Add(buttonsLayout);
             }
 
-            private void CreatePlaceSuggestion(View layout , object placeResponse)
+            private void CreatePlaceDetailsSuggestion(View layout, PlaceDetails placeDetails)
             {
                 // Casting view to layout panel
-                var stackLayout = layout as StackLayout;
+                var stackLayout = layout as StackLayout; 
 
-                // Setting random suggestion depended on placeType user chose
-                CreateQuestion(layout, SuggestionType.Place);
-                CreateAnswer(layout, SuggestionType.Place);  
-            }
+                Label suggestion = new Label
+                {
+                    Text = "What would you like to do ?",
+                    Margin = 15
+                };
 
-            private void CreateTimeSuggestion(View layout)
-            {
-                // Casting view to layout panel
-                var stackLayout = layout as StackLayout;
+                stackLayout.Children.Add(suggestion);
 
-                // Setting first question on every flow start
-                CreateQuestion(layout, SuggestionType.Time);
-                CreateAnswer(layout, SuggestionType.Time);
+                Button callBtn = new Button()
+                { 
+                    BindingContext = placeDetails,
+                    Text = "Call",
+                    WidthRequest = 50
+                };
+            
+                Button navigateBtn = new Button()
+                {
+                    BindingContext = placeDetails,
+                    Text = "Navigate Me",
+                    WidthRequest = 50
+                };
+
+                Button visitWebsiteBtn = new Button()
+                {
+                    BindingContext = placeDetails,
+                    Text = "Visit Website",
+                    WidthRequest = 50
+                };
+
+                List<View> buttons = new List<View>()
+                {
+                    callBtn, 
+                    navigateBtn,
+                    visitWebsiteBtn
+                };
+
+                // Subscribe to click event
+                callBtn.Clicked += CallBtn_Clicked;
+                navigateBtn.Clicked += NavigateBtn_Clicked;
+                visitWebsiteBtn.Clicked += VisitWebsiteBtn_Clicked;
+
+                // Creating panel for the buttons
+                var buttonsLayout = new StackLayout()
+                {
+                    Padding = 15,
+                    Spacing = 10,
+                    Orientation = StackOrientation.Horizontal,
+                    HorizontalOptions = LayoutOptions.End
+                };
+
+                // Adding buttons to the stackPanel
+                AddItemsToView(buttonsLayout, buttons);
+                stackLayout.Children.Add(buttonsLayout); 
             }
           
-            private void CreateAnswer(View layout, SuggestionType suggestionType, Enum randomPlaceType = null, object placeResponse = null)
-            {
-                // Casting view to layout panel
-                var stackLayout = layout as StackLayout;
-
-                switch (suggestionType)
-                {
-                    case SuggestionType.Place:
-                        {
-                            Button nextBtn = new Button()
-                            {
-                                Text = "Next",
-                                WidthRequest = 100
-                            };
-
-                            Button otherBtn = new Button()
-                            {
-                                Text = "Other",
-                                WidthRequest = 50
-                            };
-
-                            Button changeTimeOfDayBtn = new Button()
-                            {
-                                Text = "Change time of day",
-                                WidthRequest = 50
-                            };
-
-                            Button likeBtn = new Button()
-                            {
-                                Text = "Like",
-                                WidthRequest = 50
-                            };
-
-                            List<View> buttons = new List<View>()
-                            {
-                                nextBtn,
-                                otherBtn,
-                                likeBtn,
-                                changeTimeOfDayBtn
-                            };
-
-                            // Subscribe to click event
-                            changeTimeOfDayBtn.Clicked += ChangeTimeOfDayBtn_Clicked;
-                            nextBtn.Clicked += NextBtn_Clicked;
-                            otherBtn.Clicked += OtherBtn_Clicked;
-                            likeBtn.Clicked += LikeBtn_Clicked;
-
-                            // Creating panel for the buttons
-                            var buttonsLayout = new StackLayout()
-                            {
-                                Padding = 15,
-                                Spacing = 10,
-                                Orientation = StackOrientation.Horizontal,
-                                HorizontalOptions = LayoutOptions.End
-                            };
-
-                            // Adding buttons to the stackPanel
-                            AddItemsToView(buttonsLayout, buttons);
-                            stackLayout.Children.Add(buttonsLayout);
-                        }
-                    break;
-                    case SuggestionType.PlaceType:
-                        {
-                            Button noBtn = new Button()
-                            {
-                                Text = "No",
-                                WidthRequest = 100
-                            };
-            
-                            Button yesBtn = new Button()
-                            {
-                                Text = "Yes",
-                                WidthRequest = 50
-                            };
-
-                            List<View> buttons = new List<View>()
-                            {
-                                noBtn, 
-                                yesBtn
-                            };
-
-                            // Subscribe to click event
-                            yesBtn.Clicked += yesBtn_Clicked;
-                            noBtn.Clicked += noBtn_Clicked;
-
-                            // Creating panel for the buttons
-                            var buttonsLayout = new StackLayout()
-                            {
-                                Padding = 15,
-                                Spacing = 10,
-                                Orientation = StackOrientation.Horizontal,
-                                HorizontalOptions = LayoutOptions.End
-                            };
-
-                            // Adding buttons to the stackPanel
-                            AddItemsToView(buttonsLayout, buttons);
-                            stackLayout.Children.Add(buttonsLayout);
-                        }
-                    break;
-                    case SuggestionType.Time:
-                        {
-            
-                            Button morning = new Button()
-                            {
-                                Image = "morning.png",
-                                BackgroundColor = Color.Transparent,
-                                BorderColor = Color.Transparent,
-                                HeightRequest = 50,
-                                WidthRequest = 50
-                            };
-
-                            Button afternoon = new Button()
-                            {
-                                Image = "afternoon.png",
-                                BackgroundColor = Color.White,
-                                BorderColor = Color.White,
-                                HeightRequest = 50,
-                                WidthRequest = 50
-                            };
-
-                            Button night = new Button()
-                            {
-                                Image = "night.png",
-                                BackgroundColor = Color.Transparent,
-                                BorderColor = Color.Transparent,
-                                HeightRequest = 50,
-                                WidthRequest = 50
-                            };
-
-                            List<View> dayTimes = new List<View>()
-                            {
-                                morning,
-                                afternoon,
-                                night
-                            };
-
-                            // Subscribe to click events
-                            morning.Clicked += Morning_Clicked;
-                            afternoon.Clicked += Afternoon_Clicked;
-                            night.Clicked += Night_Clicked;
-
-                            // Creating panel for the buttons
-                            var dayTimesLayout = new StackLayout()
-                            {
-                                Spacing = 10,
-                                Orientation = StackOrientation.Horizontal,
-                                HorizontalOptions = LayoutOptions.End
-                            };
-                           
-                            // Adding dayTimes images to the stackPanel
-                            AddItemsToView(dayTimesLayout, dayTimes);
-                            stackLayout.Children.Add(dayTimesLayout);
-                        }
-                    break;
-                } 
-            }
-
-            private void CreateQuestion(View layout, SuggestionType suggestionType, Enum randomPlaceType = null, object placeResponse = null)
-            {
-                // Casting view to layout panel
-                var stackLayout = layout as StackLayout;
-
-                switch (suggestionType)
-                {
-                    case SuggestionType.Place:
-                        {
-                            
-                        }
-                    break;
-                    case SuggestionType.PlaceType:
-                        {
-                            Label suggestion = new Label
-                            {
-                                Text = randomPlaceType.GetDisplayName(),
-                                Margin = 15
-                            };
-
-                            stackLayout.Children.Add(suggestion);
-                        }
-                    break;
-                    case SuggestionType.Time:
-                        {
-                            Label dayTime = new Label
-                            {
-                                Text = "When do you plan to go ?"
-                            };
-
-                            stackLayout.Children.Add(dayTime);
-                        }
-                    break;
-                }
-            }
-         
-            private Enum GenerateTimeDependedPlaces(TimeOfDay timeChosen)
-            {
-
-                // Getting placeTypes by time of the day
-                Random rnd = new Random();
-                int namesCount;
-                int randomNumber;
-
-                switch (timeChosen)
-                {
-                    case TimeOfDay.Morning:
-                        {
-                            namesCount = Enum.GetNames(typeof(Places.MorningPlaces)).Length;
-                            randomNumber = rnd.Next(0, namesCount);
-                            randomPlaceType = (Places.MorningPlaces)randomNumber;
-                        }
-                        break;
-                    case TimeOfDay.Afternoon:
-                        {
-                            namesCount = Enum.GetNames(typeof(Places.AfternoonPlaces)).Length;
-                            randomNumber = rnd.Next(0, namesCount);
-                            randomPlaceType = (Places.AfternoonPlaces)randomNumber;
-                        }
-                        break;
-                    case TimeOfDay.Night:
-                        {
-                            namesCount = Enum.GetNames(typeof(Places.NightPlaces)).Length;
-                            randomNumber = rnd.Next(0, namesCount);
-                            randomPlaceType = (Places.NightPlaces)randomNumber;
-                        }
-                        break;
-                }
-
-                return randomPlaceType;
-
-            }
-
             private void AddItemsToView(Layout<View> layout, List<View> newItems)
             {
                 foreach (var item in newItems)
@@ -306,93 +161,78 @@ namespace KnoWhere
         #endregion
 
         #region ButtonsEvents
-
-            private void ChangeTimeOfDayBtn_Clicked(object sender, EventArgs e)
+        
+            private void CallBtn_Clicked(object sender, EventArgs e)
             {
-                CreateTimeSuggestion(MainPanel); 
+                Button button = (Button)sender;
+                var placeDetails = button.BindingContext as PlaceDetails; 
+            }
+            
+            private void VisitWebsiteBtn_Clicked(object sender, EventArgs e)
+            {
+                Button button = (Button)sender;
+                var placeDetails = button.BindingContext as PlaceDetails; 
+                Device.OpenUri(placeDetails.Website); 
+            }
+
+            private void NavigateBtn_Clicked(object sender, EventArgs e)
+            {
+                Button button = (Button)sender;
+                var placeDetails = button.BindingContext as PlaceDetails; 
             }
 
             private void NextBtn_Clicked(object sender, EventArgs e)
             {
+                currentPlaceIndex++;
+                Button button = (Button)sender; 
                 
+                CreatePlaceSuggestion(MainPanel); 
             }
-
-            private void OtherBtn_Clicked(object sender, EventArgs e)
+        
+            private void interestedBtn_Clicked(object sender, EventArgs e)
             {
-                button = (Button)sender;
+                Button button = (Button)sender;
                 DisableParent(button);
-                randomPlaceType = GenerateTimeDependedPlaces(timeChosen);
-                CreatePlaceTypeSuggestion(MainPanel, randomPlaceType);
-            }
-
-            private void LikeBtn_Clicked(object sender, EventArgs e)
-            {
                 
-            }
+                var placeChosen = places[currentPlaceIndex];
 
-            private void Night_Clicked(object sender, EventArgs e)
-            { 
-                button = (Button)sender;
-                DisableParent(button);
-                timeChosen = TimeOfDay.Night;
-                randomPlaceType = GenerateTimeDependedPlaces(timeChosen);
-                CreatePlaceTypeSuggestion(MainPanel, randomPlaceType);
-            }
+                var request = new PlaceDetailsRequest
+                {
+                   PlaceId = placeChosen.PlaceId
+                };
 
-            private void Afternoon_Clicked(object sender, EventArgs e)
+                CreatePlaceDetailsSuggestion(MainPanel, new PlaceDetails());
+            }
+        
+            private async Task<List<Place>> GeneratePlaces()
             {
-                button = (Button)sender;
-                DisableParent(button);
-                timeChosen = TimeOfDay.Afternoon;
-                randomPlaceType = GenerateTimeDependedPlaces(timeChosen);
-                CreatePlaceTypeSuggestion(MainPanel, randomPlaceType);
-            }
-
-            private void Morning_Clicked(object sender, EventArgs e)
-            {
-                button = (Button)sender;
-                DisableParent(button);
-                timeChosen = TimeOfDay.Morning;
-                randomPlaceType = GenerateTimeDependedPlaces(timeChosen);
-                CreatePlaceTypeSuggestion(MainPanel, randomPlaceType);
-            }
-
-            private async void yesBtn_Clicked(object sender, EventArgs e)
-            {
-                button = (Button)sender;
-                DisableParent(button);
-
                 double? longitude = null;
                 double? latitude = null;
 
+                // Getting user current location if GPS is on
                 if (CrossGeolocator.Current.IsGeolocationEnabled)
                 {
                     var position = await CrossGeolocator.Current.GetPositionAsync(null, null, false);
                     longitude = position.Longitude;
                     latitude = position.Latitude;
                 }
-
-                var request = new Request(timeChosen)
+                
+                // Creating the request
+                var request = new PlaceRequest()
                 {
-                    Language = Language.Hebrew,
-                    Radius = 50,
-                    UserLocation = !(longitude.HasValue && latitude.HasValue) ? null : 
+                    Language = EnumExtensions.GetDisplayName(Language.English).ToString(),
+                    Location = !(longitude.HasValue && latitude.HasValue) ? null :
                     new Location
                     {
-                       Latitude = latitude.Value,
-                       Longitude = longitude.Value
+                        Latitude = latitude.Value,
+                        Longitude = longitude.Value
                     }
                 };
-            }
-         
-            private void noBtn_Clicked(object sender, EventArgs e)
-            {
-                button = (Button)sender;
-                DisableParent(button);
-                randomPlaceType = GenerateTimeDependedPlaces(timeChosen);
-                CreatePlaceTypeSuggestion(MainPanel, randomPlaceType);
-            }
 
+                return null;
+                
+            }
+        
         #endregion
 
     }

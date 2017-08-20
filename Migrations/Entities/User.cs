@@ -19,7 +19,7 @@ namespace Database.Entities
         public int UserSettingsId { get; set; }
 
         [ForeignKey("UserSettingsId")]
-        public virtual UserSettings Settings { get; set; }
+        public virtual UserSettings SettingsNav { get; set; }
 
 
     }
