@@ -2,7 +2,7 @@
 
 namespace Communication
 {
-    public class PlaceRequest
+    public class PlacesRequest
     { 
 
         public Location Location { get; set; }

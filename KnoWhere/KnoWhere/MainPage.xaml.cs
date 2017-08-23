@@ -198,7 +198,7 @@ namespace KnoWhere
 
                 var request = new PlaceDetailsRequest
                 {
-                   PlaceId = placeChosen.PlaceId
+                   PlaceId = placeChosen.Id
                 };
 
                 CreatePlaceDetailsSuggestion(MainPanel, new PlaceDetails());
@@ -218,7 +218,7 @@ namespace KnoWhere
                 }
                 
                 // Creating the request
-                var request = new PlaceRequest()
+                var request = new PlacesRequest()
                 {
                     Language = EnumExtensions.GetDisplayName(Language.English).ToString(),
                     Location = !(longitude.HasValue && latitude.HasValue) ? null :
