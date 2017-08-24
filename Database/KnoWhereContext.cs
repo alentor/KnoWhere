@@ -1,6 +1,5 @@
 ﻿using Database.Entities;
-using Microsoft.EntityFrameworkCore;
-
+using System.Data.Entity;
 
 namespace Database
 {
@@ -22,10 +21,6 @@ namespace Database
             {
                 DatabasePath = databasePath;
             }
-
-            protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-            {
-                optionsBuilder.UseSqlite($"Filename={DatabasePath}");
-            } 
+         
     }
 }
