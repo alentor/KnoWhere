@@ -4,6 +4,7 @@ using Xamarin.Forms;
 using Communication;
 using Plugin.Geolocator;
 using System.Threading.Tasks;
+using System.Net;
 
 namespace KnoWhere
 {
@@ -228,6 +229,23 @@ namespace KnoWhere
                         Longitude = longitude.Value
                     }
                 };
+
+                try
+                {
+                    using (var webClient = new WebClient())
+                    {
+                        var queryString = request.ToQueryString();
+                        webClient.Encoding = System.Text.Encoding.UTF8;
+                        var response = webClient.DownloadString("http://10.0.2.2:10607/api/places?" + queryString);
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                    throw new ApplicationException(ex.ToString());
+                }
+                
+                
 
                 return null;
                 
