@@ -15,6 +15,8 @@ namespace KnoWhere.API.Core.PlacesJsonParser.GoogleParser
             try
             {
                 GooglePlaces googlePlaceses = await Task.Run(() => JsonConvert.DeserializeObject<GooglePlaces>(json));
+                if(googlePlaceses.Status != "OK")
+                    result.IsSucess = false;
                 foreach (Result googlePlace in googlePlaceses.Results) result.Places.Add(ConvertToPlace(googlePlace));
                 return result;
             }

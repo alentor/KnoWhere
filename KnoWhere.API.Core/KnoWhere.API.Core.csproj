@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ObjectExtensions\List.cs" />
     <Compile Include="PlacesJsonParser\GoogleParser\GoogleJsonParser.cs" />
     <Compile Include="PlacesJsonParser\GoogleParser\PlacesObjects\Geometry.cs" />
     <Compile Include="PlacesJsonParser\GoogleParser\PlacesObjects\GooglePlaces.cs" />
