@@ -1,10 +1,8 @@
-﻿using System.Diagnostics;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Communication;
-using Communication.Response;
 using KnoWhere.API.Config;
 using KnoWhere.API.Core.ObjectExtensions;
 using KnoWhere.API.Core.PlacesJsonParser.GoogleParser;

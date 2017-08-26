@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
-namespace Communication.Response
+namespace Communication
 {
-    public class PlacesResponse {
-        public bool IsSucess {get; set;} = true;
-        public List <Place> Places { get; set; }
-        public string BucketId {get; set;}
+    public class PlacesResponse
+    {
+        public bool IsSucess { get; set; } = true;
+        public List<Place> Places { get; set; }
+        public string BucketId { get; set; }
     }
 }
