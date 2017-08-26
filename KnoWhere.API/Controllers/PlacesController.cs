@@ -1,9 +1,12 @@
-﻿using System.IO;
+﻿using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Communication;
 using Communication.Response;
 using KnoWhere.API.Config;
+using KnoWhere.API.Core.ObjectExtensions;
 using KnoWhere.API.Core.PlacesJsonParser.GoogleParser;
 using KnoWhere.API.Core.PlacesJsonParser.GoogleParser.Results;
 using Microsoft.AspNetCore.Mvc;
@@ -26,28 +29,48 @@ namespace KnoWhere.API.Controllers
 
         // GET api/Places
         // E.G http://localhost:10607/api/places?Language=en&location.Latitude=32.07861&location.Longitude=34.881487
+        // Here we are doing 2 search places request to google api.
+        // First request contains a search keyword 'entertainment' in order to receive places which offer some sort of entertainment.
+        // Second request contains search type 'restaurant' in order to receive nearby restaurants.
+        // Once two of the places requests returned a positive response, we shuffle two of the places lists into a single list of places, and return that list of places.
         [HttpGet]
         public async Task<ContentResult> Get(PlacesRequest request)
         {
-            string asd = _settings.PlacesApiKey;
             if (!ModelState.IsValid) return Content(JsonConvert.SerializeObject(new PlacesResponse { isSucess = false }), "application/json");
-            GooglePlacesResult googlePlacesResult;
-            WebRequest webRequest = WebRequest.Create($"https://maps.googleapis.com/maps/api/place/nearbysearch/json?key={_settings.PlacesApiKey}&location={request.Location.Latitude},{request.Location.Longitude}&radius=2000");
-            using (WebResponse webResponse = webRequest.GetResponse())
+            string googleApiUrl = $"https://maps.googleapis.com/maps/api/place/nearbysearch/json?key={_settings.PlacesApiKey}&location={request.Location.Latitude},{request.Location.Longitude}&radius=2000";
+            // Do Entertainment request to google places API.
+            GooglePlacesResult googlePlacesEntertainmentResult;
+            WebRequest googlePlacesEntertainmentWebRequest = WebRequest.Create($"{googleApiUrl}&keyword=entertainment");
+            using (WebResponse webResponse = await googlePlacesEntertainmentWebRequest.GetResponseAsync())
             {
                 if (webResponse.GetResponseStream() == null)
                     return Content(JsonConvert.SerializeObject(new PlacesResponse { isSucess = false }), "application/json");
                 using (StreamReader streamReader = new StreamReader(webResponse.GetResponseStream()))
                 {
                     string jsonResponse = streamReader.ReadToEnd();
-                    googlePlacesResult = await _GoogleJsonParser.ParsePlacesAsync(jsonResponse);
+                    googlePlacesEntertainmentResult = await _GoogleJsonParser.ParsePlacesAsync(jsonResponse);
                 }
             }
-            if (!googlePlacesResult.IsSucess) return Content(JsonConvert.SerializeObject(new PlacesResponse { isSucess = false }), "application/json");
+            // Do Restaurant request to google places API.
+            GooglePlacesResult googlePlacesRestaurantResult;
+            WebRequest googlePlacesRestaurantWebRequest = WebRequest.Create($"{googleApiUrl}&types=restaurant");
+            using (WebResponse webResponse = await googlePlacesRestaurantWebRequest.GetResponseAsync())
+            {
+                if (webResponse.GetResponseStream() == null)
+                    return Content(JsonConvert.SerializeObject(new PlacesResponse { isSucess = false }), "application/json");
+                using (StreamReader streamReader = new StreamReader(webResponse.GetResponseStream()))
+                {
+                    string jsonResponse = streamReader.ReadToEnd();
+                    googlePlacesRestaurantResult = await _GoogleJsonParser.ParsePlacesAsync(jsonResponse);
+                }
+            }
+            if (!googlePlacesEntertainmentResult.IsSucess || !googlePlacesRestaurantResult.IsSucess) return Content(JsonConvert.SerializeObject(new PlacesResponse { isSucess = false }), "application/json");
+
             PlacesResponse response = new PlacesResponse
             {
                 BucketId = "place holder",
-                PLaces = googlePlacesResult.Places
+                // Combine and suffle Entertainment and Restaurant places.
+                Places = googlePlacesEntertainmentResult.Places.Concat(googlePlacesRestaurantResult.Places).ToList().Shuffle()
             };
             return Content(JsonConvert.SerializeObject(response), "application/json");
         }
