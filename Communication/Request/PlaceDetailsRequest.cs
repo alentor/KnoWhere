@@ -1,11 +1,7 @@
-﻿using System;
-
-namespace Communication
+﻿namespace Communication
 {
     public class PlaceDetailsRequest
-    { 
-
+    {
         public string PlaceId { get; set; }
-        
     }
 }

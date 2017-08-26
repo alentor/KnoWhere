@@ -1,11 +1,10 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Reflection;
 
 namespace Communication
 {
-      
+
     public static class EnumExtensions
     {
         public static string GetDisplayName(this Enum value)
@@ -23,7 +22,6 @@ namespace Communication
                     }
                 }
             }
-
             return value.ToString();
         }
     }

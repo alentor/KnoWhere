@@ -110,5 +110,5 @@ namespace Communication
         ChineseCN = 51,
         [Display(Description = "zh-TW")]
         ChineseTW = 52
-    }   
+    }
 }
