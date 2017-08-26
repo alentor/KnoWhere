@@ -5,6 +5,9 @@ using Communication;
 using Plugin.Geolocator;
 using System.Threading.Tasks;
 using System.Net;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Linq;
 
 namespace KnoWhere
 {
@@ -44,17 +47,31 @@ namespace KnoWhere
                 };
 
                 Image image = place.Image as Image;
+                
+                List<View> suggestionList = new List<View>()
+                {
+                    suggestion
+                };
+
+                // Creating panel for suggestion
+                var suggestionLayout = new StackLayout()
+                {
+                    Orientation = StackOrientation.Vertical,
+                };
+
+                AddItemsToView(suggestionLayout, suggestionList);
+                stackLayout.Children.Add(suggestionLayout);
 
                 Button nextBtn = new Button()
                 {
                     Text = "Next",
-                    WidthRequest = 50
+                    MinimumWidthRequest = 50
                 };
 
                 Button interestedBtn = new Button()
                 {
                     Text = "Interested",
-                    WidthRequest = 50
+                    MinimumWidthRequest = 50
                 };
 
                 List<View> buttons = new List<View>()
@@ -236,7 +253,18 @@ namespace KnoWhere
                     {
                         var queryString = request.ToQueryString();
                         webClient.Encoding = System.Text.Encoding.UTF8;
-                        var response = webClient.DownloadString("http://52.89.247.67:10607/api/places?" + queryString);
+                        var jsonResponse = webClient.DownloadString("http://79.176.58.22/api/places?" + queryString);
+                        
+                        // Serializing to Jobject
+                        var jsonObj = JObject.Parse(jsonResponse);
+
+                        // Getting places from JArray
+                        var placesJArr = jsonObj["Places"].ToString();
+                        
+                        // Deserializing JsonArray to Place List
+                        var places = JsonConvert.DeserializeObject<List<Place>>(placesJArr);
+
+                        return places;
                     }
                 }
                 catch (Exception ex)
@@ -244,11 +272,6 @@ namespace KnoWhere
 
                     throw new ApplicationException(ex.ToString());
                 }
-                
-                
-
-                return null;
-                
             }
         
         #endregion
