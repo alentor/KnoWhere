@@ -236,7 +236,7 @@ namespace KnoWhere
                     {
                         var queryString = request.ToQueryString();
                         webClient.Encoding = System.Text.Encoding.UTF8;
-                        var response = webClient.DownloadString("http://10.0.2.2:10607/api/places?" + queryString);
+                        var response = webClient.DownloadString("http://52.89.247.67:10607/api/places?" + queryString);
                     }
                 }
                 catch (Exception ex)
