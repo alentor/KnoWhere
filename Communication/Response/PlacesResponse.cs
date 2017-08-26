@@ -8,7 +8,7 @@ namespace Communication.Response
 {
     public class PlacesResponse {
         public bool isSucess {get; set;} = true;
-        public List <Place> PLaces { get; set; }
+        public List <Place> Places { get; set; }
         public string BucketId {get; set;}
     }
 }
