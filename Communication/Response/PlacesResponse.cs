@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Communication.Response
 {
     public class PlacesResponse {
-        public bool isSucess {get; set;} = true;
+        public bool IsSucess {get; set;} = true;
         public List <Place> Places { get; set; }
         public string BucketId {get; set;}
     }

@@ -37,7 +37,7 @@ namespace KnoWhere.API.Controllers
         public async Task<ContentResult> Get(PlacesRequest request)
         {
             if (string.IsNullOrEmpty(request.Language) || request.Location == null)
-                return Content(JsonConvert.SerializeObject(new PlacesResponse { isSucess = false }), "application/json");
+                return Content(JsonConvert.SerializeObject(new PlacesResponse { IsSucess = false }), "application/json");
             string googleApiUrl = $"https://maps.googleapis.com/maps/api/place/nearbysearch/json?key={_settings.PlacesApiKey}&location={request.Location.Latitude},{request.Location.Longitude}&radius=2000";
             // Do Entertainment request to google places API.
             GooglePlacesResult googlePlacesEntertainmentResult;
@@ -45,7 +45,7 @@ namespace KnoWhere.API.Controllers
             using (WebResponse webResponse = await googlePlacesEntertainmentWebRequest.GetResponseAsync())
             {
                 if (webResponse.GetResponseStream() == null)
-                    return Content(JsonConvert.SerializeObject(new PlacesResponse { isSucess = false }), "application/json");
+                    return Content(JsonConvert.SerializeObject(new PlacesResponse { IsSucess = false }), "application/json");
                 using (StreamReader streamReader = new StreamReader(webResponse.GetResponseStream()))
                 {
                     string jsonResponse = streamReader.ReadToEnd();
@@ -58,14 +58,14 @@ namespace KnoWhere.API.Controllers
             using (WebResponse webResponse = await googlePlacesRestaurantWebRequest.GetResponseAsync())
             {
                 if (webResponse.GetResponseStream() == null)
-                    return Content(JsonConvert.SerializeObject(new PlacesResponse { isSucess = false }), "application/json");
+                    return Content(JsonConvert.SerializeObject(new PlacesResponse { IsSucess = false }), "application/json");
                 using (StreamReader streamReader = new StreamReader(webResponse.GetResponseStream()))
                 {
                     string jsonResponse = streamReader.ReadToEnd();
                     googlePlacesRestaurantResult = await _GoogleJsonParser.ParsePlacesAsync(jsonResponse);
                 }
             }
-            if (!googlePlacesEntertainmentResult.IsSucess || !googlePlacesRestaurantResult.IsSucess) return Content(JsonConvert.SerializeObject(new PlacesResponse { isSucess = false }), "application/json");
+            if (!googlePlacesEntertainmentResult.IsSucess || !googlePlacesRestaurantResult.IsSucess) return Content(JsonConvert.SerializeObject(new PlacesResponse { IsSucess = false }), "application/json");
 
             PlacesResponse response = new PlacesResponse
             {
