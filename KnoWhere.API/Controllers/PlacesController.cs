@@ -36,7 +36,7 @@ namespace KnoWhere.API.Controllers
         {
             if (string.IsNullOrEmpty(request.Language) || request.Location == null)
                 return Content(JsonConvert.SerializeObject(new PlacesResponse { IsSucess = false }), "application/json");
-            string googleApiUrl = $"https://maps.googleapis.com/maps/api/place/nearbysearch/json?key={_Settings.PlacesApiKey}&location={request.Location.Latitude},{request.Location.Longitude}&radius=2000";
+            string googleApiUrl = $"https://maps.googleapis.com/maps/api/place/nearbysearch/json?key={_Settings.PlacesApiKey}&location={request.Location.Latitude},{request.Location.Longitude}&radius=2000&isopen=true";
             // Do Entertainment request to google places API.
             GooglePlacesResult googlePlacesEntertainmentResult;
             WebRequest googlePlacesEntertainmentWebRequest = WebRequest.Create($"{googleApiUrl}&keyword=entertainment");
