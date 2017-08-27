@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Communication;
 using KnoWhere.API.Core.PlacesJsonParser.GoogleParser.PlacesObjects;
 using KnoWhere.API.Core.PlacesJsonParser.GoogleParser.Results;
@@ -15,16 +14,16 @@ namespace KnoWhere.API.Core.PlacesJsonParser.GoogleParser
             try
             {
                 GooglePlaces googlePlaceses = await Task.Run(() => JsonConvert.DeserializeObject<GooglePlaces>(json));
-                if(googlePlaceses.Status != "OK")
+                if (googlePlaceses.Status != "OK")
                     result.IsSucess = false;
-                foreach (Result googlePlace in googlePlaceses.Results) result.Places.Add(ConvertToPlace(googlePlace));
+                foreach (Result googlePlace in googlePlaceses.Results)
+                    result.Places.Add(ConvertToPlace(googlePlace));
                 return result;
             }
-            catch (Exception e)
+            catch
             {
                 result.IsSucess = false;
-                Console.WriteLine(e);
-                throw;
+                return result;
             }
         }
 
@@ -32,11 +31,15 @@ namespace KnoWhere.API.Core.PlacesJsonParser.GoogleParser
         {
             Place place = new Place
             {
-                Id = result.Id,
+                Id = result.PlaceId,
                 Address = result.Vicinity,
                 Name = result.Name,
                 Rating = result.Rating,
             };
+            if (result.Photos != null)
+            {
+                place.ImageId = result.Photos[0].PhotoReference;
+            }
             return place;
         }
     }

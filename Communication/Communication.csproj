@@ -64,6 +64,7 @@
     <Compile Include="Request\IRequest.cs" />
     <Compile Include="Request\ImageRequest.cs" />
     <Compile Include="Request\PlacesRequest.cs" />
+    <Compile Include="Response\PlaceDetailsResponse.cs" />
     <Compile Include="Response\PlacesResponse.cs" />
   </ItemGroup>
   <ItemGroup>
