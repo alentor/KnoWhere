@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace KnoWhere.API.Core.PlacesJsonParser.GoogleParser.PlacesObjects
+namespace KnoWhere.API.Core.PlacesJsonParser.GoogleParser.PlacesObjects.Common
 {
     public class Photo
     {
