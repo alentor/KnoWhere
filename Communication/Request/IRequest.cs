@@ -4,6 +4,8 @@ namespace Communication
 {
     public interface IRequest
     {
-        Task<object> Send();
+        Task<object> SendAsync();
+
+        object Send();
     }
 }

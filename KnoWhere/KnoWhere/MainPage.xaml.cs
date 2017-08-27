@@ -81,14 +81,15 @@ namespace KnoWhere
                     WidthRequest = 150,
                     HeightRequest = 150
                 };
-
-                ImageRequest imageRequest = new ImageRequest { ImageId = place.ImageId };
-                
+    
                 // Retrieving the image from api
-                var imageResponse = (Stream)(await imageRequest.Send());
-
-                var imageSource = ImageSource.FromStream(() => imageResponse);
-                image.Source = imageSource;
+                if (!String.IsNullOrEmpty(place.ImageId))
+                {
+                    ImageRequest imageRequest = new ImageRequest { ImageId = place.ImageId };
+                    var imageResponse = (Stream)(await imageRequest.SendAsync());
+                    var imageSource = ImageSource.FromStream(() => imageResponse);
+                    image.Source = imageSource;
+                }
 
                 Label suggestion = new Label
                 {
@@ -278,7 +279,7 @@ namespace KnoWhere
                 CreatePlaceSuggestion(MainPanel); 
             }
         
-            private async void interestedBtn_Clicked(object sender, EventArgs e)
+            private void interestedBtn_Clicked(object sender, EventArgs e)
             {
                 Button button = (Button)sender;
                 DisableParent(button);
@@ -286,7 +287,7 @@ namespace KnoWhere
                 var placeChosen = places[currentPlaceIndex];
                 var placeDetailsRequest = new PlacesDetailsRequest { PlaceId = placeChosen.Id };
                 
-                placeDetails = (PlaceDetails)(await placeDetailsRequest.Send()); 
+                placeDetails = (PlaceDetails)placeDetailsRequest.Send(); 
                 CreatePlaceDetailsSuggestion(MainPanel); 
             }
         
@@ -321,7 +322,7 @@ namespace KnoWhere
                 // Removing loader gif
                 RemoveLoaderFromView(MainPanel);
 
-                return (List<Place>)(await request.Send());
+                return (List<Place>)request.Send();
                 
             }
         
