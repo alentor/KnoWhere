@@ -19,7 +19,8 @@ namespace KnoWhere.API.Core.PlacesJsonParser.GoogleParser
                 if (placeses.Status != "OK")
                     result.IsSucess = false;
                 foreach (PlaceGoogle googlePlace in placeses.PlacesGoogle)
-                    result.Places.Add(ConvertToPlace(googlePlace));
+                    if (googlePlace.Photos != null)
+                        result.Places.Add(ConvertToPlace(googlePlace));
                 return result;
             }
             catch
