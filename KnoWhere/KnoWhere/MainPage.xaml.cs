@@ -5,6 +5,11 @@ using Communication;
 using Plugin.Geolocator;
 using System.Threading.Tasks;
 using System.Net;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Threading;
+using System.Diagnostics;
+using System.IO;
 
 namespace KnoWhere
 {
@@ -15,46 +20,105 @@ namespace KnoWhere
 
         private int currentPlaceIndex = 0;
 
+        private static StackLayout loaderLayout = new StackLayout()
+        {
+            BackgroundColor = Color.Transparent,
+            Orientation = StackOrientation.Horizontal,
+            HorizontalOptions = LayoutOptions.Start
+        };
+
+        private static WebView loader = new WebView
+        {  
+            Source = "http://thedigitalstory.com/img/hex777777_load_spinner.gif.pagespeed.ce.NtyO2jnzqo.gif",
+            WidthRequest = 16,
+            HeightRequest = 16,
+            BackgroundColor = Color.Transparent
+        };
+
+
 
         public MainPage()
         {
             InitializeComponent();
-            Start();
+            loaderLayout.Children.Add(loader);
+            Start(); 
         }
 
         public async void Start()
         {
+            // Adding loader gif
+            AddLoaderToView(MainPanel);
+
+            // Init welcome msg
+            Label welcomeLbl = new Label { Text = "Good " + TimeOfDay.GetTimeOfDayText(DateTime.Now) + "!" };
+            
+            // Removing loader gif
+            RemoveLoaderFromView(MainPanel);
+
+            // Adding welcome msg
+            MainPanel.Children.Add(welcomeLbl);
+
+            // Adding loader gif
+            AddLoaderToView(MainPanel);
+
+            // Reading places from api
             places = await GeneratePlaces();
-            CreatePlaceSuggestion(MainPanel);
+
+            // Creating suggestion
+            CreatePlaceSuggestion(MainPanel); 
         }
 
         #region Functions
         
-            private void CreatePlaceSuggestion(View layout)
+            private async void CreatePlaceSuggestion(View layout)
             {
                 // Casting view to layout panel
                 var stackLayout = layout as StackLayout;
                 
                 var place = places[currentPlaceIndex];
 
+                Image image = new Image
+                {
+                    WidthRequest = 150,
+                    HeightRequest = 150
+                };
+
+                ImageRequest imageRequest = new ImageRequest { ImageId = place.ImageId };
+                
+                // Retrieving the image from api
+                var imageResponse = (Stream)(await imageRequest.Send());
+
+                var imageSource = ImageSource.FromStream(() => imageResponse);
+                image.Source = imageSource;
+
                 Label suggestion = new Label
                 {
                     Text = "How about " + place.Name + "?",
                     Margin = 15
+                };  
+
+                List<View> suggestionList = new List<View>()
+                {
+                    suggestion,
+                    image
                 };
 
-                Image image = place.Image as Image;
-
+                // Creating panel for suggestion
+                var suggestionLayout = new StackLayout()
+                {
+                    Orientation = StackOrientation.Vertical,
+                };
+             
                 Button nextBtn = new Button()
                 {
                     Text = "Next",
-                    WidthRequest = 50
+                    MinimumWidthRequest = 50
                 };
 
                 Button interestedBtn = new Button()
                 {
                     Text = "Interested",
-                    WidthRequest = 50
+                    MinimumWidthRequest = 50
                 };
 
                 List<View> buttons = new List<View>()
@@ -76,7 +140,14 @@ namespace KnoWhere
                     HorizontalOptions = LayoutOptions.End
                 };
 
-                // Adding buttons to the stackPanel
+                // Removing loader gif
+                RemoveLoaderFromView(MainPanel);
+
+                // Adding suggestion to layout
+                AddItemsToView(suggestionLayout, suggestionList);
+                stackLayout.Children.Add(suggestionLayout);
+
+                // Adding buttons to layout
                 AddItemsToView(buttonsLayout, buttons);
                 stackLayout.Children.Add(buttonsLayout);
             }
@@ -98,21 +169,21 @@ namespace KnoWhere
                 { 
                     BindingContext = placeDetails,
                     Text = "Call",
-                    WidthRequest = 50
+                    MinimumWidthRequest = 50
                 };
             
                 Button navigateBtn = new Button()
                 {
                     BindingContext = placeDetails,
                     Text = "Navigate Me",
-                    WidthRequest = 50
+                    MinimumWidthRequest = 50
                 };
 
                 Button visitWebsiteBtn = new Button()
                 {
                     BindingContext = placeDetails,
                     Text = "Visit Website",
-                    WidthRequest = 50
+                    MinimumWidthRequest = 50
                 };
 
                 List<View> buttons = new List<View>()
@@ -149,7 +220,22 @@ namespace KnoWhere
                 }
             }
 
-            private void DisableParent(View view)
+            private void AddLoaderToView(View layout)
+            {
+                // Casting view to layout panel
+                var stackLayout = layout as StackLayout;
+                Thread.Sleep(500);
+                stackLayout.Children.Add(loaderLayout); 
+            }
+
+            private void RemoveLoaderFromView(View layout)
+            {
+                // Casting view to layout panel
+                var stackLayout = layout as StackLayout; 
+                stackLayout.Children.Remove(loaderLayout);
+            }
+
+        private void DisableParent(View view)
             {
                 var parent = view.Parent;
                 var childrens = ((StackLayout)parent).Children;
@@ -172,7 +258,9 @@ namespace KnoWhere
             private void VisitWebsiteBtn_Clicked(object sender, EventArgs e)
             {
                 Button button = (Button)sender;
-                var placeDetails = button.BindingContext as PlaceDetails; 
+                var placeDetails = button.BindingContext as PlaceDetails;
+
+                if (placeDetails.Website != null)
                 Device.OpenUri(placeDetails.Website); 
             }
 
@@ -186,6 +274,7 @@ namespace KnoWhere
             {
                 currentPlaceIndex++;
                 Button button = (Button)sender; 
+                DisableParent(button);
                 
                 CreatePlaceSuggestion(MainPanel); 
             }
@@ -196,12 +285,6 @@ namespace KnoWhere
                 DisableParent(button);
                 
                 var placeChosen = places[currentPlaceIndex];
-
-                var request = new PlaceDetailsRequest
-                {
-                   PlaceId = placeChosen.Id
-                };
-
                 CreatePlaceDetailsSuggestion(MainPanel, new PlaceDetails());
             }
         
@@ -230,24 +313,7 @@ namespace KnoWhere
                     }
                 };
 
-                try
-                {
-                    using (var webClient = new WebClient())
-                    {
-                        var queryString = request.ToQueryString();
-                        webClient.Encoding = System.Text.Encoding.UTF8;
-                        var response = webClient.DownloadString("http://10.0.2.2:10607/api/places?" + queryString);
-                    }
-                }
-                catch (Exception ex)
-                {
-
-                    throw new ApplicationException(ex.ToString());
-                }
-                
-                
-
-                return null;
+                return (List<Place>)(await request.Send());
                 
             }
         
