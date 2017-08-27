@@ -1,10 +1,8 @@
-﻿using System.Diagnostics;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Communication;
-using Communication.Response;
 using KnoWhere.API.Config;
 using KnoWhere.API.Core.ObjectExtensions;
 using KnoWhere.API.Core.PlacesJsonParser.GoogleParser;
@@ -18,13 +16,13 @@ namespace KnoWhere.API.Controllers
     [Route("api/[controller]")]
     public class PlacesController : Controller
     {
-        private readonly Settings _settings;
+        private readonly Settings _Settings;
         private readonly GoogleJsonParser _GoogleJsonParser = new GoogleJsonParser();
 
-        // Places controller constructor.
+        // Controller constructor.
         public PlacesController(IOptions<Settings> optionsAccessor)
         {
-            _settings = optionsAccessor.Value;
+            _Settings = optionsAccessor.Value;
         }
 
         // GET api/Places
@@ -37,15 +35,15 @@ namespace KnoWhere.API.Controllers
         public async Task<ContentResult> Get(PlacesRequest request)
         {
             if (string.IsNullOrEmpty(request.Language) || request.Location == null)
-                return Content(JsonConvert.SerializeObject(new PlacesResponse { isSucess = false }), "application/json");
-            string googleApiUrl = $"https://maps.googleapis.com/maps/api/place/nearbysearch/json?key={_settings.PlacesApiKey}&location={request.Location.Latitude},{request.Location.Longitude}&radius=2000";
+                return Content(JsonConvert.SerializeObject(new PlacesResponse { IsSucess = false }), "application/json");
+            string googleApiUrl = $"https://maps.googleapis.com/maps/api/place/nearbysearch/json?key={_Settings.PlacesApiKey}&location={request.Location.Latitude},{request.Location.Longitude}&radius=2000";
             // Do Entertainment request to google places API.
             GooglePlacesResult googlePlacesEntertainmentResult;
             WebRequest googlePlacesEntertainmentWebRequest = WebRequest.Create($"{googleApiUrl}&keyword=entertainment");
             using (WebResponse webResponse = await googlePlacesEntertainmentWebRequest.GetResponseAsync())
             {
                 if (webResponse.GetResponseStream() == null)
-                    return Content(JsonConvert.SerializeObject(new PlacesResponse { isSucess = false }), "application/json");
+                    return Content(JsonConvert.SerializeObject(new PlacesResponse { IsSucess = false }), "application/json");
                 using (StreamReader streamReader = new StreamReader(webResponse.GetResponseStream()))
                 {
                     string jsonResponse = streamReader.ReadToEnd();
@@ -58,15 +56,15 @@ namespace KnoWhere.API.Controllers
             using (WebResponse webResponse = await googlePlacesRestaurantWebRequest.GetResponseAsync())
             {
                 if (webResponse.GetResponseStream() == null)
-                    return Content(JsonConvert.SerializeObject(new PlacesResponse { isSucess = false }), "application/json");
+                    return Content(JsonConvert.SerializeObject(new PlacesResponse { IsSucess = false }), "application/json");
                 using (StreamReader streamReader = new StreamReader(webResponse.GetResponseStream()))
                 {
                     string jsonResponse = streamReader.ReadToEnd();
                     googlePlacesRestaurantResult = await _GoogleJsonParser.ParsePlacesAsync(jsonResponse);
                 }
             }
-            if (!googlePlacesEntertainmentResult.IsSucess || !googlePlacesRestaurantResult.IsSucess) return Content(JsonConvert.SerializeObject(new PlacesResponse { isSucess = false }), "application/json");
-
+            if (!googlePlacesEntertainmentResult.IsSucess || !googlePlacesRestaurantResult.IsSucess)
+                return Content(JsonConvert.SerializeObject(new PlacesResponse { IsSucess = false }), "application/json");
             PlacesResponse response = new PlacesResponse
             {
                 BucketId = "place holder",

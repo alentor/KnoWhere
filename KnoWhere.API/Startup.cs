@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using KnoWhere.API.Config;
+using KnoWhere.API.Core.MiddleWares;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -26,7 +27,6 @@ namespace KnoWhere.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             // Adds services required for using options.
             services.AddOptions();
             // Register the IConfiguration instance which MyOptions binds against.
@@ -36,16 +36,8 @@ namespace KnoWhere.API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
-        {
-            app.Use(async (context, next) =>
-            {
-                Stopwatch stopwatch = new Stopwatch();
-                stopwatch.Start();
-                await next.Invoke();
-                stopwatch.Stop();
-                Debug.WriteLine($"<!-- {stopwatch.ElapsedMilliseconds} ms -->");
-            });
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env){
+            app.UseMiddleware <ElapsedTime>();
             if (env.IsDevelopment())
                 app.UseDeveloperExceptionPage();
             app.UseMvc();

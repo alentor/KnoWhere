@@ -1,4 +1,4 @@
-﻿using ModernHttpClient;
+using ModernHttpClient;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -32,5 +32,4 @@ namespace Communication
             return details;
         }
          
-    } 
-}
+    }
