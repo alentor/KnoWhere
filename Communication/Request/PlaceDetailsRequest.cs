@@ -1,8 +1,11 @@
-﻿using Newtonsoft.Json;
+﻿using ModernHttpClient;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Communication
@@ -14,14 +17,19 @@ namespace Communication
 
         public async Task<object> Send()
         {
+            object details = null;
+
             try
             {
-                return null;
+                var httpClient = new HttpClient(new NativeMessageHandler());
+                details = await httpClient.GetStringAsync(new Uri("http://79.176.58.22/api/placedetails/" + PlaceId));
             }
-            catch (Exception ex)
+            catch (NullReferenceException ex)
             {
-                throw new ApplicationException(ex.ToString());
+                Debug.WriteLine("No photo was found. ex: " + ex.ToString());
             }
+
+            return details;
         }
          
     } 
