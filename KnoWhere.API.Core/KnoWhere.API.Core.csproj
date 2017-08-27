@@ -89,9 +89,11 @@
     <Compile Include="PlacesJsonParser\GoogleParser\PlacesObjects\Geometry.cs" />
     <Compile Include="PlacesJsonParser\GoogleParser\PlacesObjects\GooglePlaces.cs" />
     <Compile Include="PlacesJsonParser\GoogleParser\PlacesObjects\Location.cs" />
+    <Compile Include="PlacesJsonParser\GoogleParser\PlacesObjects\Northeast.cs" />
     <Compile Include="PlacesJsonParser\GoogleParser\PlacesObjects\OpeningHours.cs" />
     <Compile Include="PlacesJsonParser\GoogleParser\PlacesObjects\Photo.cs" />
     <Compile Include="PlacesJsonParser\GoogleParser\PlacesObjects\Result.cs" />
+    <Compile Include="PlacesJsonParser\GoogleParser\PlacesObjects\Southwest.cs" />
     <Compile Include="PlacesJsonParser\GoogleParser\PlacesObjects\Viewport.cs" />
     <Compile Include="PlacesJsonParser\GoogleParser\Results\GooglePlacesResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

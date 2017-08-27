@@ -16,13 +16,13 @@ namespace KnoWhere.API.Controllers
     [Route("api/[controller]")]
     public class PlacesController : Controller
     {
-        private readonly Settings _settings;
+        private readonly Settings _Settings;
         private readonly GoogleJsonParser _GoogleJsonParser = new GoogleJsonParser();
 
         // Places controller constructor.
         public PlacesController(IOptions<Settings> optionsAccessor)
         {
-            _settings = optionsAccessor.Value;
+            _Settings = optionsAccessor.Value;
         }
 
         // GET api/Places
@@ -36,7 +36,7 @@ namespace KnoWhere.API.Controllers
         {
             if (string.IsNullOrEmpty(request.Language) || request.Location == null)
                 return Content(JsonConvert.SerializeObject(new PlacesResponse { IsSucess = false }), "application/json");
-            string googleApiUrl = $"https://maps.googleapis.com/maps/api/place/nearbysearch/json?key={_settings.PlacesApiKey}&location={request.Location.Latitude},{request.Location.Longitude}&radius=2000";
+            string googleApiUrl = $"https://maps.googleapis.com/maps/api/place/nearbysearch/json?key={_Settings.PlacesApiKey}&location={request.Location.Latitude},{request.Location.Longitude}&radius=2000";
             // Do Entertainment request to google places API.
             GooglePlacesResult googlePlacesEntertainmentResult;
             WebRequest googlePlacesEntertainmentWebRequest = WebRequest.Create($"{googleApiUrl}&keyword=entertainment");
@@ -63,8 +63,8 @@ namespace KnoWhere.API.Controllers
                     googlePlacesRestaurantResult = await _GoogleJsonParser.ParsePlacesAsync(jsonResponse);
                 }
             }
-            if (!googlePlacesEntertainmentResult.IsSucess || !googlePlacesRestaurantResult.IsSucess) return Content(JsonConvert.SerializeObject(new PlacesResponse { IsSucess = false }), "application/json");
-
+            if (!googlePlacesEntertainmentResult.IsSucess || !googlePlacesRestaurantResult.IsSucess)
+                return Content(JsonConvert.SerializeObject(new PlacesResponse { IsSucess = false }), "application/json");
             PlacesResponse response = new PlacesResponse
             {
                 BucketId = "place holder",
