@@ -19,7 +19,7 @@ namespace KnoWhere.API.Controllers
         private readonly Settings _Settings;
         private readonly GoogleJsonParser _GoogleJsonParser = new GoogleJsonParser();
 
-        // Places controller constructor.
+        // Controller constructor.
         public PlacesController(IOptions<Settings> optionsAccessor)
         {
             _Settings = optionsAccessor.Value;
