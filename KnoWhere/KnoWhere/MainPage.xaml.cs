@@ -4,11 +4,7 @@ using Xamarin.Forms;
 using Communication;
 using Plugin.Geolocator;
 using System.Threading.Tasks;
-using System.Net;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System.Threading;
-using System.Diagnostics;
 using System.IO;
 
 namespace KnoWhere
@@ -16,26 +12,30 @@ namespace KnoWhere
     public partial class MainPage : ContentPage
     {
 
-        private static List<Place> places { get; set; }
+        #region Properties
 
-        private int currentPlaceIndex = 0;
+            private static List<Place> places { get; set; }
 
-        private static StackLayout loaderLayout = new StackLayout()
-        {
-            BackgroundColor = Color.Transparent,
-            Orientation = StackOrientation.Horizontal,
-            HorizontalOptions = LayoutOptions.Start
-        };
+            private int currentPlaceIndex = 0;
 
-        private static WebView loader = new WebView
-        {  
-            Source = "http://thedigitalstory.com/img/hex777777_load_spinner.gif.pagespeed.ce.NtyO2jnzqo.gif",
-            WidthRequest = 16,
-            HeightRequest = 16,
-            BackgroundColor = Color.Transparent
-        };
+            private static StackLayout loaderLayout = new StackLayout()
+            {
+                BackgroundColor = Color.Transparent,
+                Orientation = StackOrientation.Horizontal,
+                HorizontalOptions = LayoutOptions.Start
+            };
 
+            private static WebView loader = new WebView
+            {  
+                Source = "http://thedigitalstory.com/img/hex777777_load_spinner.gif.pagespeed.ce.NtyO2jnzqo.gif",
+                WidthRequest = 16,
+                HeightRequest = 16,
+                BackgroundColor = Color.Transparent
+            };
 
+            private static PlaceDetails placeDetails { get; set; }
+
+        #endregion
 
         public MainPage()
         {
@@ -152,8 +152,9 @@ namespace KnoWhere
                 stackLayout.Children.Add(buttonsLayout);
             }
 
-            private void CreatePlaceDetailsSuggestion(View layout, PlaceDetails placeDetails)
+            private void CreatePlaceDetailsSuggestion(View layout)
             {
+                
                 // Casting view to layout panel
                 var stackLayout = layout as StackLayout; 
 
@@ -162,26 +163,21 @@ namespace KnoWhere
                     Text = "What would you like to do ?",
                     Margin = 15
                 };
-
-                stackLayout.Children.Add(suggestion);
-
+            
                 Button callBtn = new Button()
-                { 
-                    BindingContext = placeDetails,
+                {  
                     Text = "Call",
                     MinimumWidthRequest = 50
                 };
             
                 Button navigateBtn = new Button()
-                {
-                    BindingContext = placeDetails,
+                { 
                     Text = "Navigate Me",
                     MinimumWidthRequest = 50
                 };
 
                 Button visitWebsiteBtn = new Button()
-                {
-                    BindingContext = placeDetails,
+                { 
                     Text = "Visit Website",
                     MinimumWidthRequest = 50
                 };
@@ -206,8 +202,14 @@ namespace KnoWhere
                     Orientation = StackOrientation.Horizontal,
                     HorizontalOptions = LayoutOptions.End
                 };
+                
+                // Removing loading gif 
+                RemoveLoaderFromView(MainPanel);
 
-                // Adding buttons to the stackPanel
+                // Adding suggestion msg
+                stackLayout.Children.Add(suggestion);
+
+                // Adding buttons to layout
                 AddItemsToView(buttonsLayout, buttons);
                 stackLayout.Children.Add(buttonsLayout); 
             }
@@ -251,23 +253,20 @@ namespace KnoWhere
         
             private void CallBtn_Clicked(object sender, EventArgs e)
             {
-                Button button = (Button)sender;
-                var placeDetails = button.BindingContext as PlaceDetails; 
+                Button button = (Button)sender; 
             }
             
             private void VisitWebsiteBtn_Clicked(object sender, EventArgs e)
             {
                 Button button = (Button)sender;
-                var placeDetails = button.BindingContext as PlaceDetails;
-
+            
                 if (placeDetails.Website != null)
                 Device.OpenUri(placeDetails.Website); 
             }
 
             private void NavigateBtn_Clicked(object sender, EventArgs e)
             {
-                Button button = (Button)sender;
-                var placeDetails = button.BindingContext as PlaceDetails; 
+                Button button = (Button)sender; 
             }
 
             private void NextBtn_Clicked(object sender, EventArgs e)
@@ -279,13 +278,19 @@ namespace KnoWhere
                 CreatePlaceSuggestion(MainPanel); 
             }
         
-            private void interestedBtn_Clicked(object sender, EventArgs e)
+            private async void interestedBtn_Clicked(object sender, EventArgs e)
             {
                 Button button = (Button)sender;
                 DisableParent(button);
                 
                 var placeChosen = places[currentPlaceIndex];
-                CreatePlaceDetailsSuggestion(MainPanel, new PlaceDetails());
+                var placeDetailsRequest = new PlacesDetailsRequest { PlaceId = placeChosen.Id };
+                
+                placeDetails = (PlaceDetails)(await placeDetailsRequest.Send());
+
+                // Adding loader gif
+                AddLoaderToView(MainPanel);
+                CreatePlaceDetailsSuggestion(MainPanel);
             }
         
             private async Task<List<Place>> GeneratePlaces()
