@@ -4,14 +4,13 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Communication
 {
     public class PlacesRequest : IRequest
-    { 
+    {
         public Location Location { get; set; }
         public string Language { get; set; }
 
@@ -44,5 +43,5 @@ namespace Communication
         {
             return "Language=" + Language + "&location.Latitude=" + Location.Latitude + "&location.Longitude=" + Location.Longitude;
         }
-    } 
+    }
 }

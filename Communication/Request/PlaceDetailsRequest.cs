@@ -1,24 +1,18 @@
-using ModernHttpClient;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using ModernHttpClient;
 
 namespace Communication
 {
     public class PlacesDetailsRequest : IRequest
-    { 
-
-        public string PlaceId { get; set; } 
+    {
+        public string PlaceId { get; set; }
 
         public async Task<object> Send()
         {
             object details = null;
-
             try
             {
                 var httpClient = new HttpClient(new NativeMessageHandler());
@@ -28,8 +22,7 @@ namespace Communication
             {
                 Debug.WriteLine("No photo was found. ex: " + ex.ToString());
             }
-
             return details;
         }
-         
     }
+}

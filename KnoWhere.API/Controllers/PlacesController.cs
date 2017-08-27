@@ -42,8 +42,6 @@ namespace KnoWhere.API.Controllers
             WebRequest googlePlacesEntertainmentWebRequest = WebRequest.Create($"{googleApiUrl}&keyword=entertainment");
             using (WebResponse webResponse = await googlePlacesEntertainmentWebRequest.GetResponseAsync())
             {
-                if (webResponse.GetResponseStream() == null)
-                    return Content(JsonConvert.SerializeObject(new PlacesResponse { IsSucess = false }), "application/json");
                 using (StreamReader streamReader = new StreamReader(webResponse.GetResponseStream()))
                 {
                     string jsonResponse = streamReader.ReadToEnd();
@@ -55,8 +53,6 @@ namespace KnoWhere.API.Controllers
             WebRequest googlePlacesRestaurantWebRequest = WebRequest.Create($"{googleApiUrl}&types=restaurant");
             using (WebResponse webResponse = await googlePlacesRestaurantWebRequest.GetResponseAsync())
             {
-                if (webResponse.GetResponseStream() == null)
-                    return Content(JsonConvert.SerializeObject(new PlacesResponse { IsSucess = false }), "application/json");
                 using (StreamReader streamReader = new StreamReader(webResponse.GetResponseStream()))
                 {
                     string jsonResponse = streamReader.ReadToEnd();

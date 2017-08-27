@@ -23,11 +23,12 @@ namespace KnoWhere.API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult> Get(string id)
         {
-            if (string.IsNullOrEmpty(id)) return null;
+            if (string.IsNullOrEmpty(id))
+                return null;
             string googleApiUrl = $"https://maps.googleapis.com/maps/api/place/photo?key={_Settings.PlacesApiKey}";
-            WebRequest googlePlacesEntertainmentWebRequest = WebRequest.Create($"{googleApiUrl}&maxwidth=400&photoreference={id}");
-            WebResponse webResponse = await googlePlacesEntertainmentWebRequest.GetResponseAsync();
-            return File(webResponse.GetResponseStream(), webResponse.ContentType);
+            WebRequest googlePlacesImageRequest = WebRequest.Create($"{googleApiUrl}&maxwidth=400&photoreference={id}");
+            WebResponse googlePlacesImageResponse = await googlePlacesImageRequest.GetResponseAsync();
+            return File(googlePlacesImageResponse.GetResponseStream(), googlePlacesImageResponse.ContentType);
         }
     }
 }

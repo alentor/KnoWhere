@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net;
 using ModernHttpClient;
 using System.Net.Http;
 using System.Diagnostics;
@@ -27,6 +26,6 @@ namespace Communication
 
             return image;
         }
-         
-    } 
+
+    }
 }
