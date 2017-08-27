@@ -1,4 +1,4 @@
-﻿namespace KnoWhere.API.Core.PlacesJsonParser.GoogleParser.PlacesObjects
+﻿namespace KnoWhere.API.Core.PlacesJsonParser.GoogleParser.PlacesObjects.Common
 {
     public class Geometry
     {

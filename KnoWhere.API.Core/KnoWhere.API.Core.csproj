@@ -86,20 +86,30 @@
     <Compile Include="MiddleWares\ElapsedTime.cs" />
     <Compile Include="ObjectExtensions\List.cs" />
     <Compile Include="PlacesJsonParser\GoogleParser\GoogleJsonParser.cs" />
-    <Compile Include="PlacesJsonParser\GoogleParser\PlacesObjects\Geometry.cs" />
-    <Compile Include="PlacesJsonParser\GoogleParser\PlacesObjects\GooglePlaces.cs" />
-    <Compile Include="PlacesJsonParser\GoogleParser\PlacesObjects\Location.cs" />
-    <Compile Include="PlacesJsonParser\GoogleParser\PlacesObjects\Northeast.cs" />
-    <Compile Include="PlacesJsonParser\GoogleParser\PlacesObjects\OpeningHours.cs" />
-    <Compile Include="PlacesJsonParser\GoogleParser\PlacesObjects\Photo.cs" />
-    <Compile Include="PlacesJsonParser\GoogleParser\PlacesObjects\Result.cs" />
-    <Compile Include="PlacesJsonParser\GoogleParser\PlacesObjects\Southwest.cs" />
-    <Compile Include="PlacesJsonParser\GoogleParser\PlacesObjects\Viewport.cs" />
+    <Compile Include="PlacesJsonParser\GoogleParser\PlacesObjects\PlaceDetails\AddressComponent.cs" />
+    <Compile Include="PlacesJsonParser\GoogleParser\PlacesObjects\PlaceDetails\Close.cs" />
+    <Compile Include="PlacesJsonParser\GoogleParser\PlacesObjects\Common\Geometry.cs" />
+    <Compile Include="PlacesJsonParser\GoogleParser\PlacesObjects\Places\PlacesResult.cs" />
+    <Compile Include="PlacesJsonParser\GoogleParser\PlacesObjects\Common\Location.cs" />
+    <Compile Include="PlacesJsonParser\GoogleParser\PlacesObjects\Common\Northeast.cs" />
+    <Compile Include="PlacesJsonParser\GoogleParser\PlacesObjects\PlaceDetails\Open.cs" />
+    <Compile Include="PlacesJsonParser\GoogleParser\PlacesObjects\Places\OpeningHours.cs" />
+    <Compile Include="PlacesJsonParser\GoogleParser\PlacesObjects\Common\Photo.cs" />
+    <Compile Include="PlacesJsonParser\GoogleParser\PlacesObjects\PlaceDetails\OpeningHours.cs" />
+    <Compile Include="PlacesJsonParser\GoogleParser\PlacesObjects\PlaceDetails\Period.cs" />
+    <Compile Include="PlacesJsonParser\GoogleParser\PlacesObjects\PlaceDetails\PlaceDetailsGoogle.cs" />
+    <Compile Include="PlacesJsonParser\GoogleParser\PlacesObjects\PlaceDetails\PlaceDetailsResult.cs" />
+    <Compile Include="PlacesJsonParser\GoogleParser\PlacesObjects\Places\PlaceGoogle.cs" />
+    <Compile Include="PlacesJsonParser\GoogleParser\PlacesObjects\PlaceDetails\Review.cs" />
+    <Compile Include="PlacesJsonParser\GoogleParser\PlacesObjects\Common\Southwest.cs" />
+    <Compile Include="PlacesJsonParser\GoogleParser\PlacesObjects\Common\Viewport.cs" />
+    <Compile Include="PlacesJsonParser\GoogleParser\Results\GooglePlaceDetailsResult.cs" />
     <Compile Include="PlacesJsonParser\GoogleParser\Results\GooglePlacesResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
