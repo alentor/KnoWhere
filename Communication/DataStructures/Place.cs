@@ -11,6 +11,6 @@ namespace Communication
 
         public double? Rating { get; set; }
 
-        public object Image { get; set; }
+        public string ImageId { get; set; }
     }
 }
