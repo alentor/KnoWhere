@@ -4,7 +4,6 @@ using Xamarin.Forms;
 using Communication;
 using Plugin.Geolocator;
 using System.Threading.Tasks;
-using System.Threading;
 using System.IO;
 
 namespace KnoWhere
@@ -57,10 +56,7 @@ namespace KnoWhere
 
             // Adding welcome msg
             MainPanel.Children.Add(welcomeLbl);
-
-            // Adding loader gif
-            AddLoaderToView(MainPanel);
-
+             
             // Reading places from api
             places = await GeneratePlaces();
 
@@ -72,6 +68,9 @@ namespace KnoWhere
         
             private async void CreatePlaceSuggestion(View layout)
             {
+                // Adding loader gif
+                AddLoaderToView(MainPanel);
+
                 // Casting view to layout panel
                 var stackLayout = layout as StackLayout;
                 
@@ -82,14 +81,15 @@ namespace KnoWhere
                     WidthRequest = 150,
                     HeightRequest = 150
                 };
-
-                ImageRequest imageRequest = new ImageRequest { ImageId = place.ImageId };
-                
+    
                 // Retrieving the image from api
-                var imageResponse = (Stream)(await imageRequest.Send());
-
-                var imageSource = ImageSource.FromStream(() => imageResponse);
-                image.Source = imageSource;
+                if (!String.IsNullOrEmpty(place.ImageId))
+                {
+                    ImageRequest imageRequest = new ImageRequest { ImageId = place.ImageId };
+                    var imageResponse = (Stream)(await imageRequest.SendAsync());
+                    var imageSource = ImageSource.FromStream(() => imageResponse);
+                    image.Source = imageSource;
+                }
 
                 Label suggestion = new Label
                 {
@@ -140,9 +140,9 @@ namespace KnoWhere
                     HorizontalOptions = LayoutOptions.End
                 };
 
-                // Removing loader gif
+                // Removing loading gif 
                 RemoveLoaderFromView(MainPanel);
-
+              
                 // Adding suggestion to layout
                 AddItemsToView(suggestionLayout, suggestionList);
                 stackLayout.Children.Add(suggestionLayout);
@@ -154,7 +154,9 @@ namespace KnoWhere
 
             private void CreatePlaceDetailsSuggestion(View layout)
             {
-                
+                // Adding loader gif
+                AddLoaderToView(MainPanel);    
+
                 // Casting view to layout panel
                 var stackLayout = layout as StackLayout; 
 
@@ -202,7 +204,7 @@ namespace KnoWhere
                     Orientation = StackOrientation.Horizontal,
                     HorizontalOptions = LayoutOptions.End
                 };
-                
+
                 // Removing loading gif 
                 RemoveLoaderFromView(MainPanel);
 
@@ -225,8 +227,7 @@ namespace KnoWhere
             private void AddLoaderToView(View layout)
             {
                 // Casting view to layout panel
-                var stackLayout = layout as StackLayout;
-                Thread.Sleep(500);
+                var stackLayout = layout as StackLayout; 
                 stackLayout.Children.Add(loaderLayout); 
             }
 
@@ -274,11 +275,11 @@ namespace KnoWhere
                 currentPlaceIndex++;
                 Button button = (Button)sender; 
                 DisableParent(button);
-                
+                 
                 CreatePlaceSuggestion(MainPanel); 
             }
         
-            private async void interestedBtn_Clicked(object sender, EventArgs e)
+            private void interestedBtn_Clicked(object sender, EventArgs e)
             {
                 Button button = (Button)sender;
                 DisableParent(button);
@@ -286,15 +287,15 @@ namespace KnoWhere
                 var placeChosen = places[currentPlaceIndex];
                 var placeDetailsRequest = new PlacesDetailsRequest { PlaceId = placeChosen.Id };
                 
-                placeDetails = (PlaceDetails)(await placeDetailsRequest.Send());
-
-                // Adding loader gif
-                AddLoaderToView(MainPanel);
-                CreatePlaceDetailsSuggestion(MainPanel);
+                placeDetails = (PlaceDetails)placeDetailsRequest.Send(); 
+                CreatePlaceDetailsSuggestion(MainPanel); 
             }
         
             private async Task<List<Place>> GeneratePlaces()
             {
+                // Adding loader gif
+                AddLoaderToView(MainPanel);
+
                 double? longitude = null;
                 double? latitude = null;
 
@@ -318,7 +319,10 @@ namespace KnoWhere
                     }
                 };
 
-                return (List<Place>)(await request.Send());
+                // Removing loader gif
+                RemoveLoaderFromView(MainPanel);
+
+                return (List<Place>)request.Send();
                 
             }
         

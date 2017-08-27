@@ -3,6 +3,7 @@ using ModernHttpClient;
 using System.Net.Http;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using System.Net;
 
 namespace Communication
 {
@@ -10,14 +11,17 @@ namespace Communication
     {
         public string ImageId { get; set; }
 
-        public async Task<object> Send()
+        // Use only this method as the sync method is not supported
+        public async Task<object> SendAsync()
         {
             object image = null;
 
             try
             {
                 var httpClient = new HttpClient(new NativeMessageHandler());
-                image = await httpClient.GetStreamAsync(new Uri("http://79.176.58.22/api/image/" + ImageId));
+
+                if (!String.IsNullOrEmpty(ImageId))
+                    image = await httpClient.GetStreamAsync(new Uri("http://79.176.58.22/api/image/" + ImageId));
             }
             catch (NullReferenceException ex)
             {
@@ -27,5 +31,26 @@ namespace Communication
             return image;
         }
 
+        public object Send()
+        {
+            object image = null;
+
+            try
+            { 
+                var request = WebRequest.Create("http://79.176.58.22/api/image/" + ImageId);
+
+                if (!String.IsNullOrEmpty(ImageId))
+                using (var response = request.GetResponse())
+                {
+                    image = response.GetResponseStream();
+                } 
+            }
+            catch (NullReferenceException ex)
+            {
+                Debug.WriteLine("No photo was found. ex: " + ex.ToString());
+            }
+
+            return image;
+        }
     }
 }
