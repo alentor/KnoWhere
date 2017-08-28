@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using System.Net;
 using System.Threading.Tasks;
-using Communication;
 using Communication.Response;
 using KnoWhere.API.Config;
 using KnoWhere.API.Core.PlacesJsonParser.GoogleParser;
