@@ -20,7 +20,7 @@ namespace Communication
             {
                 using (var client = new WebClient())
                 {
-                    var jsonResponse = client.DownloadString(new Uri("http://79.176.58.22/api/placedetails/" + PlaceId));
+                    var jsonResponse = client.DownloadString(new Uri(AppSettings.Settings["PlaceDetailsRequestApi"] + PlaceId));
 
                     
                     // Serializing to Jobject
@@ -51,7 +51,7 @@ namespace Communication
 
                 if (!String.IsNullOrEmpty(PlaceId))
                 {
-                    var jsonResponse = await httpClient.GetStringAsync(new Uri("http://79.176.58.22/api/placedetails/" + PlaceId));
+                    var jsonResponse = await httpClient.GetStringAsync(new Uri(AppSettings.Settings["PlaceDetailsRequestApi"] + PlaceId));
 
                     // Serializing to Jobject
                     var jsonObj = JObject.Parse(jsonResponse);

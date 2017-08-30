@@ -21,10 +21,13 @@ namespace Communication
 
             try
             {
+
+                var tt = AppSettings.Settings["PlaceRequestApi"];
+
                 using (var client = new WebClient())
                 {
                     var queryString = ToQueryString();
-                    var jsonResponse = client.DownloadString("http://79.176.58.22/api/places?" + queryString);
+                    var jsonResponse = client.DownloadString(AppSettings.Settings["PlaceRequestApi"] + queryString);
 
                     // Serializing to Jobject
                     var jsonObj = JObject.Parse(jsonResponse);
@@ -52,7 +55,7 @@ namespace Communication
             {
                 var httpClient = new HttpClient(new NativeMessageHandler());
                 var queryString = ToQueryString();
-                var jsonResponse = await httpClient.GetStringAsync("http://79.176.58.22/api/places?" + queryString);
+                var jsonResponse = await httpClient.GetStringAsync(AppSettings.Settings["PlaceRequestApi"] + queryString);
 
                 // Serializing to Jobject
                 var jsonObj = JObject.Parse(jsonResponse);

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.3
+VisualStudioVersion = 15.0.26730.10
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "KnoWhere", "KnoWhere\KnoWhere\KnoWhere.shproj", "{DD4AF4E1-2870-4228-B7CF-758E86DA87C4}"
 EndProject
@@ -85,6 +85,7 @@ Global
 		{0F0EDD6E-64F0-4663-8853-3311F53CB4EE}.AppStore|iPhoneSimulator.ActiveCfg = AppStore|iPhoneSimulator
 		{0F0EDD6E-64F0-4663-8853-3311F53CB4EE}.AppStore|iPhoneSimulator.Build.0 = AppStore|iPhoneSimulator
 		{0F0EDD6E-64F0-4663-8853-3311F53CB4EE}.Debug|Any CPU.ActiveCfg = Debug|iPhone
+		{0F0EDD6E-64F0-4663-8853-3311F53CB4EE}.Debug|Any CPU.Build.0 = Debug|iPhone
 		{0F0EDD6E-64F0-4663-8853-3311F53CB4EE}.Debug|iPhone.ActiveCfg = Debug|iPhone
 		{0F0EDD6E-64F0-4663-8853-3311F53CB4EE}.Debug|iPhone.Build.0 = Debug|iPhone
 		{0F0EDD6E-64F0-4663-8853-3311F53CB4EE}.Debug|iPhoneSimulator.ActiveCfg = Debug|iPhoneSimulator
