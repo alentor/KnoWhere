@@ -21,7 +21,7 @@ namespace Communication
                 var httpClient = new HttpClient(new NativeMessageHandler());
 
                 if (!String.IsNullOrEmpty(ImageId))
-                    image = await httpClient.GetStreamAsync(new Uri("http://79.176.58.22/api/image/" + ImageId));
+                    image = await httpClient.GetStreamAsync(new Uri(AppSettings.Settings["ImageRequestApi"] + ImageId));
             }
             catch (NullReferenceException ex)
             {
@@ -37,7 +37,7 @@ namespace Communication
 
             try
             { 
-                var request = WebRequest.Create("http://79.176.58.22/api/image/" + ImageId);
+                var request = WebRequest.Create(AppSettings.Settings["ImageRequestApi"] + ImageId);
 
                 if (!String.IsNullOrEmpty(ImageId))
                 using (var response = request.GetResponse())
