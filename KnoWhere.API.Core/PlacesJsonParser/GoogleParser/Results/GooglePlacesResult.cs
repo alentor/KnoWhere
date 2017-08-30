@@ -7,5 +7,6 @@ namespace KnoWhere.API.Core.PlacesJsonParser.GoogleParser.Results
     {
         public bool IsSucess { get; set; } = true;
         public List<Place> Places { get; set; } = new List<Place>();
+        public string BucketId { get; set; }
     }
 }

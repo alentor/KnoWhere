@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnoWhere.API.Core", "KnoWhe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Communication", "Communication\Communication.csproj", "{7EB0F1CE-4A31-4623-80C1-3DDA1D041B4F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnoWhere.API.Data", "KnoWhere.API.Data\KnoWhere.API.Data.csproj", "{A3D80254-E3AC-4180-AC3A-D0C38A99928A}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		KnoWhere\KnoWhere\KnoWhere.projitems*{0f0edd6e-64f0-4663-8853-3311f53cb4ee}*SharedItemsImports = 4
@@ -164,6 +166,30 @@ Global
 		{7EB0F1CE-4A31-4623-80C1-3DDA1D041B4F}.Release|iPhone.Build.0 = Release|Any CPU
 		{7EB0F1CE-4A31-4623-80C1-3DDA1D041B4F}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
 		{7EB0F1CE-4A31-4623-80C1-3DDA1D041B4F}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{A3D80254-E3AC-4180-AC3A-D0C38A99928A}.Ad-Hoc|Any CPU.ActiveCfg = Release|Any CPU
+		{A3D80254-E3AC-4180-AC3A-D0C38A99928A}.Ad-Hoc|Any CPU.Build.0 = Release|Any CPU
+		{A3D80254-E3AC-4180-AC3A-D0C38A99928A}.Ad-Hoc|iPhone.ActiveCfg = Release|Any CPU
+		{A3D80254-E3AC-4180-AC3A-D0C38A99928A}.Ad-Hoc|iPhone.Build.0 = Release|Any CPU
+		{A3D80254-E3AC-4180-AC3A-D0C38A99928A}.Ad-Hoc|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{A3D80254-E3AC-4180-AC3A-D0C38A99928A}.Ad-Hoc|iPhoneSimulator.Build.0 = Release|Any CPU
+		{A3D80254-E3AC-4180-AC3A-D0C38A99928A}.AppStore|Any CPU.ActiveCfg = Release|Any CPU
+		{A3D80254-E3AC-4180-AC3A-D0C38A99928A}.AppStore|Any CPU.Build.0 = Release|Any CPU
+		{A3D80254-E3AC-4180-AC3A-D0C38A99928A}.AppStore|iPhone.ActiveCfg = Release|Any CPU
+		{A3D80254-E3AC-4180-AC3A-D0C38A99928A}.AppStore|iPhone.Build.0 = Release|Any CPU
+		{A3D80254-E3AC-4180-AC3A-D0C38A99928A}.AppStore|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{A3D80254-E3AC-4180-AC3A-D0C38A99928A}.AppStore|iPhoneSimulator.Build.0 = Release|Any CPU
+		{A3D80254-E3AC-4180-AC3A-D0C38A99928A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3D80254-E3AC-4180-AC3A-D0C38A99928A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3D80254-E3AC-4180-AC3A-D0C38A99928A}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{A3D80254-E3AC-4180-AC3A-D0C38A99928A}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{A3D80254-E3AC-4180-AC3A-D0C38A99928A}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{A3D80254-E3AC-4180-AC3A-D0C38A99928A}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{A3D80254-E3AC-4180-AC3A-D0C38A99928A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3D80254-E3AC-4180-AC3A-D0C38A99928A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3D80254-E3AC-4180-AC3A-D0C38A99928A}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{A3D80254-E3AC-4180-AC3A-D0C38A99928A}.Release|iPhone.Build.0 = Release|Any CPU
+		{A3D80254-E3AC-4180-AC3A-D0C38A99928A}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{A3D80254-E3AC-4180-AC3A-D0C38A99928A}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
