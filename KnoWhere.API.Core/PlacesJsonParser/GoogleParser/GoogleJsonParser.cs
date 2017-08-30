@@ -16,11 +16,11 @@ namespace KnoWhere.API.Core.PlacesJsonParser.GoogleParser
             try
             {
                 PlacesResult placeses = await Task.Run(() => JsonConvert.DeserializeObject<PlacesResult>(json));
-                if (placeses.Status != "OK")
-                    result.IsSucess = false;
+                if (placeses.Status != "OK") result.IsSucess = false;
                 foreach (PlaceGoogle googlePlace in placeses.PlacesGoogle)
                     if (googlePlace.Photos != null)
                         result.Places.Add(ConvertToPlace(googlePlace));
+                result.BucketId = placeses.NextPageToken;
                 return result;
             }
             catch
@@ -36,8 +36,7 @@ namespace KnoWhere.API.Core.PlacesJsonParser.GoogleParser
             try
             {
                 PlaceDetailsResult placeDetails = await Task.Run(() => JsonConvert.DeserializeObject<PlaceDetailsResult>(json));
-                if (placeDetails.Status != "OK")
-                    result.IsSucess = false;
+                if (placeDetails.Status != "OK") result.IsSucess = false;
                 result.PlaceDetails = ConvertToPlaceDetails(placeDetails.PlaceDetailsGoogle);
                 return result;
             }
@@ -57,8 +56,7 @@ namespace KnoWhere.API.Core.PlacesJsonParser.GoogleParser
                 Name = placeGoogle.Name,
                 Rating = placeGoogle.Rating,
             };
-            if (placeGoogle.Photos != null)
-                place.ImageId = placeGoogle.Photos[0].PhotoReference;
+            if (placeGoogle.Photos != null) place.ImageId = placeGoogle.Photos[0].PhotoReference;
             return place;
         }
 

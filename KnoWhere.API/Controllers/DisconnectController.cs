@@ -1,5 +1,8 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
+using KnoWhere.API.Data;
+using KnoWhere.API.Data.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KnoWhere.API.Controllers

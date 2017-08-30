@@ -1,13 +1,11 @@
-﻿using System;
-using System.Diagnostics;
-using KnoWhere.API.Config;
+﻿using KnoWhere.API.Config;
 using KnoWhere.API.Core.MiddleWares;
+using KnoWhere.API.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Primitives;
 
 namespace KnoWhere.API
 {
@@ -33,13 +31,15 @@ namespace KnoWhere.API
             services.Configure<Settings>(Configuration);
             // Add MVC service.
             services.AddMvc();
+            // Configure DbContext
+            services.AddDbContext<KnoWhereContext>(dbOptions => dbOptions.UseSqlServer(Configuration["KnoWhereDbConnectionString"]));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env){
-            app.UseMiddleware <ElapsedTime>();
-            if (env.IsDevelopment())
-                app.UseDeveloperExceptionPage();
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        {
+            app.UseMiddleware<ElapsedTime>();
+            if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
             app.UseMvc();
         }
     }
