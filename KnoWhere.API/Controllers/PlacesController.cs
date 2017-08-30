@@ -35,7 +35,11 @@ namespace KnoWhere.API.Controllers
         public async Task<ContentResult> Get(PlacesRequest request)
         {
             if (string.IsNullOrEmpty(request.Language) || request.Location == null)
-                return Content(JsonConvert.SerializeObject(new PlacesResponse { IsSucess = false }), "application/json");
+                return Content(JsonConvert.SerializeObject(new PlacesResponse
+                {
+                    IsSucess = false
+                }),
+                               "application/json");
             string googleApiUrl = $"https://maps.googleapis.com/maps/api/place/nearbysearch/json?key={_Settings.PlacesApiKey}&location={request.Location.Latitude},{request.Location.Longitude}&radius=2000&isopen=true";
             // Do Entertainment request to google places API.
             GooglePlacesResult googlePlacesEntertainmentResult;
@@ -60,7 +64,11 @@ namespace KnoWhere.API.Controllers
                 }
             }
             if (!googlePlacesEntertainmentResult.IsSucess || !googlePlacesRestaurantResult.IsSucess)
-                return Content(JsonConvert.SerializeObject(new PlacesResponse { IsSucess = false }), "application/json");
+                return Content(JsonConvert.SerializeObject(new PlacesResponse
+                {
+                    IsSucess = false
+                }),
+                               "application/json");
             PlacesResponse response = new PlacesResponse
             {
                 BucketId = "place holder",

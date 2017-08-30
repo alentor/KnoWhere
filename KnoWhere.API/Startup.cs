@@ -39,7 +39,8 @@ namespace KnoWhere.API
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             app.UseMiddleware<ElapsedTime>();
-            if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
+            if (env.IsDevelopment()) 
+                app.UseDeveloperExceptionPage();
             app.UseMvc();
         }
     }
