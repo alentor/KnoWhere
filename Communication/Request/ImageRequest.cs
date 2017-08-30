@@ -7,50 +7,57 @@ using System.Net;
 
 namespace Communication
 {
-    public class ImageRequest : IRequest
+    public class ImageRequest : RequestBase, IRequest
     {
-        public string ImageId { get; set; }
+        public string ImageId { get; set; } 
+
+
+        public ImageRequest()
+        {
+            ApiKey = "ImageRequestApi";
+
+            if (String.IsNullOrEmpty(AppSettings.Settings[key: ApiKey]))
+                throw new ApplicationException(ApiKey + " was not found in Application Settings");
+            else
+                ApiUri = AppSettings.Settings[key: ApiKey];
+        }
 
         // Use only this method as the sync method is not supported
         public async Task<object> SendAsync()
-        {
-            object image = null;
-
+        { 
             try
             {
                 var httpClient = new HttpClient(new NativeMessageHandler());
 
                 if (!String.IsNullOrEmpty(ImageId))
-                    image = await httpClient.GetStreamAsync(new Uri(AppSettings.Settings["ImageRequestApi"] + ImageId));
+                    ResponseData = await httpClient.GetStreamAsync(new Uri(ApiUri + ImageId));
             }
-            catch (NullReferenceException ex)
+            catch (Exception ex)
             {
-                Debug.WriteLine("No photo was found. ex: " + ex.ToString());
+                Debug.WriteLine("No image was found. ex: " + ex.ToString());
             }
 
-            return image;
+            return ResponseData;
         }
 
         public object Send()
-        {
-            object image = null;
-
+        { 
             try
             { 
-                var request = WebRequest.Create(AppSettings.Settings["ImageRequestApi"] + ImageId);
+                var request = WebRequest.Create(ApiUri + ImageId);
 
                 if (!String.IsNullOrEmpty(ImageId))
                 using (var response = request.GetResponse())
                 {
-                    image = response.GetResponseStream();
+                        ResponseData = response.GetResponseStream();
                 } 
             }
-            catch (NullReferenceException ex)
+            catch (Exception ex)
             {
-                Debug.WriteLine("No photo was found. ex: " + ex.ToString());
+                Debug.WriteLine("No image was found. ex: " + ex.ToString());
             }
 
-            return image;
+            return ResponseData;
         }
     }
 }
