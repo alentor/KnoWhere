@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using System.Net;
 using System.Net.Http;
 using ModernHttpClient;
+using Newtonsoft.Json.Linq;
 
 namespace Communication
 {
@@ -21,8 +22,15 @@ namespace Communication
                 {
                     var jsonResponse = client.DownloadString(new Uri("http://79.176.58.22/api/placedetails/" + PlaceId));
 
-                    // Deserializing JsonArray to Place List
-                    details = JsonConvert.DeserializeObject<PlaceDetails>(jsonResponse);
+                    
+                    // Serializing to Jobject
+                    var jsonObj = JObject.Parse(jsonResponse);
+
+                    // Getting place details from result
+                    var placeDetails = jsonObj["Place"].ToString();
+
+                    // Deserializing to PlaceDetails
+                    details = JsonConvert.DeserializeObject<PlaceDetails>(placeDetails);
                 }
             }
             catch (NullReferenceException ex)
@@ -42,7 +50,18 @@ namespace Communication
                 var httpClient = new HttpClient(new NativeMessageHandler());
 
                 if (!String.IsNullOrEmpty(PlaceId))
-                    details = await httpClient.GetStringAsync(new Uri("http://79.176.58.22/api/placedetails/" + PlaceId));
+                {
+                    var jsonResponse = await httpClient.GetStringAsync(new Uri("http://79.176.58.22/api/placedetails/" + PlaceId));
+
+                    // Serializing to Jobject
+                    var jsonObj = JObject.Parse(jsonResponse);
+
+                    // Getting place details from result
+                    var placeDetails = jsonObj["Place"].ToString();
+
+                    // Deserializing to PlaceDetails
+                    details = JsonConvert.DeserializeObject<PlaceDetails>(placeDetails);
+                }
             }
             catch (NullReferenceException ex)
             {

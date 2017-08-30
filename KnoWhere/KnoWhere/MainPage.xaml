@@ -4,7 +4,7 @@
              xmlns:local="clr-namespace:KnoWhere"
              x:Class="KnoWhere.MainPage">
 
-    <ScrollView>
+    <ScrollView x:Name="MainScroller">
         <StackLayout x:Name="MainPanel" Padding="20">
  
         </StackLayout>
