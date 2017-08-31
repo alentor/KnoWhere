@@ -14,25 +14,16 @@ namespace Communication
     {
         public Location Location { get; set; }
         public string Language { get; set; } 
+         
 
-        public PlacesRequest()
-        {
-            ApiKey = "PlaceRequestApi";
-
-            if (String.IsNullOrEmpty(AppSettings.Settings[key: ApiKey]))
-                throw new ApplicationException(ApiKey + " was not found in Application Settings");
-            else
-                ApiUri = AppSettings.Settings[key: ApiKey];
-        }
-
-        public object Send()
+        public object Send(string HttpAddress)
         { 
             try
             { 
                 using (var client = new WebClient())
                 {
                     var queryString = ToQueryString();
-                    var jsonResponse = client.DownloadString(ApiUri + queryString);
+                    var jsonResponse = client.DownloadString(HttpAddress + queryString);
 
                     // Serializing to Jobject
                     var jsonObj = JObject.Parse(jsonResponse);
@@ -52,7 +43,7 @@ namespace Communication
             return ResponseData;
         }
 
-        public async Task<object> SendAsync()
+        public async Task<object> SendAsync(string HttpAddress)
         { 
             try
             {

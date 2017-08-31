@@ -13,24 +13,14 @@ namespace Communication
     {
         public string PlaceId { get; set; }  
       
-
-        public PlacesDetailsRequest()
-        {
-            ApiKey = "PlaceDetailsRequestApi";
-
-            if (String.IsNullOrEmpty(AppSettings.Settings[key: ApiKey]))
-                throw new ApplicationException(ApiKey + " was not found in Application Settings");
-            else
-                ApiUri = AppSettings.Settings[key: ApiKey];
-        }
-
-        public object Send()
+         
+        public object Send(string HttpAddress)
         { 
             try
             {
                 using (var client = new WebClient())
                 {
-                    var jsonResponse = client.DownloadString(new Uri(ApiUri + PlaceId));
+                    var jsonResponse = client.DownloadString(new Uri(HttpAddress + PlaceId));
 
                     
                     // Serializing to Jobject
@@ -51,7 +41,7 @@ namespace Communication
             return ResponseData;
         }
 
-        public async Task<object> SendAsync()
+        public async Task<object> SendAsync(string HttpAddress)
         {
             try
             {
@@ -59,7 +49,7 @@ namespace Communication
 
                 if (!String.IsNullOrEmpty(PlaceId))
                 {
-                    var jsonResponse = await httpClient.GetStringAsync(new Uri(ApiUri + PlaceId));
+                    var jsonResponse = await httpClient.GetStringAsync(new Uri(HttpAddress + PlaceId));
 
                     // Serializing to Jobject
                     var jsonObj = JObject.Parse(jsonResponse);

@@ -35,7 +35,8 @@ namespace KnoWhere
                     ImageId = place.ImageId
                 };
 
-                var imageResponse = (Stream)(await imageRequest.SendAsync());
+                var httpAddress = AppSettings.GetValue("ImageRequestApi");
+                var imageResponse = (Stream)(await imageRequest.SendAsync(httpAddress));
                 var imageSource = ImageSource.FromStream(() => imageResponse);
                 image.Source = imageSource;
             }
@@ -71,10 +72,10 @@ namespace KnoWhere
             };
 
             List<View> buttons = new List<View>()
-                {
-                    nextBtn,
-                    interestedBtn,
-                };
+            {
+                nextBtn,
+                interestedBtn,
+            };
 
             // Subscribe to click event 
             nextBtn.Clicked += NextBtn_Clicked;
@@ -109,42 +110,50 @@ namespace KnoWhere
             // Casting view to layout panel
             var stackLayout = layout as StackLayout;
 
+            List<View> buttons = new List<View>();
+
             Label suggestion = new Label
             {
                 Text = "What would you like to do ?",
                 Margin = 15
             };
 
-            Button callBtn = new Button()
+            // Ensure phone has value before adding a button
+            if (!String.IsNullOrEmpty(placeDetails.Phone))
             {
-                Text = "Call",
-                MinimumWidthRequest = 50
-            };
+                Button callBtn = new Button()
+                {
+                    Text = "Call",
+                    MinimumWidthRequest = 50
+                };
+                callBtn.Clicked += CallBtn_Clicked;
+                buttons.Add(callBtn);
+            }
 
-            Button navigateBtn = new Button()
+            // Ensure location has value before adding a button
+            if (placeDetails.Location != null)
             {
-                Text = "Navigate Me",
-                MinimumWidthRequest = 50
-            };
+                Button navigateBtn = new Button()
+                {
+                    Text = "Navigate Me",
+                    MinimumWidthRequest = 50
+                };
+                navigateBtn.Clicked += NavigateBtn_Clicked;
+                buttons.Add(navigateBtn);
+            }
 
-            Button visitWebsiteBtn = new Button()
+            // Ensure website has value before adding a button
+            if (placeDetails.Website != null)
             {
-                Text = "Visit Website",
-                MinimumWidthRequest = 50
-            };
-
-            List<View> buttons = new List<View>()
-            {
-                callBtn,
-                navigateBtn,
-                visitWebsiteBtn
-            };
-
-            // Subscribe to click event
-            callBtn.Clicked += CallBtn_Clicked;
-            navigateBtn.Clicked += NavigateBtn_Clicked;
-            visitWebsiteBtn.Clicked += VisitWebsiteBtn_Clicked;
-
+                Button visitWebsiteBtn = new Button()
+                {
+                    Text = "Visit Website",
+                    MinimumWidthRequest = 50
+                };
+                visitWebsiteBtn.Clicked += VisitWebsiteBtn_Clicked;
+                buttons.Add(visitWebsiteBtn);
+            }
+             
             // Creating panel for the buttons
             var buttonsLayout = new StackLayout()
             {
@@ -240,7 +249,8 @@ namespace KnoWhere
             // Removing loader gif
             RemoveLoaderFromView(MainPanel);
 
-            return (List<Place>)request.Send();
+            var httpAddress = AppSettings.GetValue("PlaceRequestApi");
+            return (List<Place>)request.Send(httpAddress);
 
         }
 
