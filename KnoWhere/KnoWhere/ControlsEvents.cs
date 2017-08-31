@@ -6,34 +6,22 @@ namespace KnoWhere
 {
     public partial class MainPage : ContentPage
     {  
-        private async void CallBtn_Clicked(object sender, EventArgs e)
+        private void CallBtn_Clicked(object sender, EventArgs e)
         {
             Button button = (Button)sender;
-
-            if (placeDetails.Phone != null)
-                Device.OpenUri(new Uri("tel: " + placeDetails.Phone));
-            else
-                await DisplayAlert("Alert", places[currentPlaceIndex].Name + " didn't provide their phone number", "OK");
+            Device.OpenUri(new Uri("tel: " + placeDetails.Phone));
         }
 
-        private async void VisitWebsiteBtn_Clicked(object sender, EventArgs e)
+        private void VisitWebsiteBtn_Clicked(object sender, EventArgs e)
         {
             Button button = (Button)sender;
-
-            if (placeDetails.Website != null)
-                Device.OpenUri(placeDetails.Website);
-            else
-                await DisplayAlert("Alert", places[currentPlaceIndex].Name + " don't own a website", "OK");
+            Device.OpenUri(placeDetails.Website);
         }
 
-        private async void NavigateBtn_Clicked(object sender, EventArgs e)
+        private void NavigateBtn_Clicked(object sender, EventArgs e)
         {
             Button button = (Button)sender;
-
-            if (placeDetails.Location != null) 
-                Device.OpenUri(new Uri("https://waze.com/ul?ll=" + placeDetails.Location.Latitude + '&' + placeDetails.Location.Longitude));
-            else
-                await DisplayAlert("Alert", places[currentPlaceIndex].Name + " didn't provide their location", "OK");
+            Device.OpenUri(new Uri("https://waze.com/ul?ll=" + placeDetails.Location.Latitude + '&' + placeDetails.Location.Longitude));
         }
 
         private void NextBtn_Clicked(object sender, EventArgs e)
@@ -56,7 +44,8 @@ namespace KnoWhere
                 PlaceId = placeChosen.Id
             };
 
-            placeDetails = (PlaceDetails)(await placeDetailsRequest.SendAsync());
+            var httpAddress = AppSettings.GetValue("PlaceDetailsRequestApi");
+            placeDetails = (PlaceDetails)(await placeDetailsRequest.SendAsync(httpAddress));
             CreatePlaceDetailsSuggestion(MainPanel);
         }
          
