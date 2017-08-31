@@ -1,4 +1,5 @@
 ﻿using Communication;
+using Plugin.Geolocator;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -29,7 +30,11 @@ namespace KnoWhere
             // Retrieving the image from api
             if (!String.IsNullOrEmpty(place.ImageId))
             {
-                ImageRequest imageRequest = new ImageRequest { ImageId = place.ImageId };
+                ImageRequest imageRequest = new ImageRequest()
+                {
+                    ImageId = place.ImageId
+                };
+
                 var imageResponse = (Stream)(await imageRequest.SendAsync());
                 var imageSource = ImageSource.FromStream(() => imageResponse);
                 image.Source = imageSource;
@@ -202,6 +207,41 @@ namespace KnoWhere
             // Casting view to layout panel
             var stackLayout = layout as StackLayout;
             stackLayout.Children.Remove(loaderLayout);
+        }
+
+        private async Task<List<Place>> GeneratePlaces()
+        {
+            // Adding loader gif
+            AddLoaderToView(MainPanel);
+
+            double? longitude = null;
+            double? latitude = null;
+
+            // Getting user current location if GPS is on
+            if (CrossGeolocator.Current.IsGeolocationEnabled)
+            {
+                var position = await CrossGeolocator.Current.GetPositionAsync(null, null, false);
+                longitude = position.Longitude;
+                latitude = position.Latitude;
+            }
+
+            // Creating the request
+            var request = new PlacesRequest()
+            {
+                Language = EnumExtensions.GetDisplayName(Language.English).ToString(),
+                Location = !(longitude.HasValue && latitude.HasValue) ? null :
+                new Location
+                {
+                    Latitude = latitude.Value,
+                    Longitude = longitude.Value
+                }
+            };
+
+            // Removing loader gif
+            RemoveLoaderFromView(MainPanel);
+
+            return (List<Place>)request.Send();
+
         }
 
         private void DisableParent(View view)
