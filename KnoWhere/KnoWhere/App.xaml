@@ -3,8 +3,26 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="KnoWhere.App">
 	<Application.Resources>
+        <ResourceDictionary>
+                
+            <!--Button Style-->
+            <Style x:Key="DefaultButtonStyle" TargetType="Button">
+                <Setter Property="FontSize" Value="10" />
+                <Setter Property="HeightRequest" Value="35" />
+            </Style>
+                
+            <!--Label Style-->
+            <Style x:Key="DefaultLabelStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="Margin" Value="15" />
+            </Style>
 
-		<!-- Application resource dictionary -->
+            <!--Image Style-->
+            <Style x:Key="DefaultImageStyle" TargetType="Image">
+                <Setter Property="WidthRequest" Value="150" />
+                <Setter Property="HeightRequest" Value="150" />
+            </Style>
 
-	</Application.Resources>
+        </ResourceDictionary>
+    </Application.Resources> 
 </Application>

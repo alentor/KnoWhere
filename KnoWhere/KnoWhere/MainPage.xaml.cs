@@ -17,16 +17,20 @@ namespace KnoWhere
         public async void Start()
         { 
             // Adding loader gif
-            AddLoaderToView(MainPanel);
+            await AddLoaderToView(MainPanel);
             
             // Init welcome msg
-            Label welcomeLbl = new Label { Text = "Good " + TimeOfDay.GetTimeOfDayText(DateTime.Now) + "!" };
+            Label welcomeMsg = new Label
+            {
+                Text = "Good " + TimeOfDay.GetTimeOfDayText(DateTime.Now) + "!",
+                Style = Application.Current.Resources["DefaultLabelStyle"] as Style
+            };
             
             // Removing loader gif
             RemoveLoaderFromView(MainPanel);
 
             // Adding welcome msg
-            MainPanel.Children.Add(welcomeLbl);
+            MainPanel.Children.Add(welcomeMsg);
              
             // Reading places from api
             places = await GeneratePlaces();
