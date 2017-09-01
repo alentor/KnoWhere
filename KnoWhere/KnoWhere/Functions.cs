@@ -14,7 +14,7 @@ namespace KnoWhere
         private async void CreatePlaceSuggestion(View layout)
         {
             // Adding loader gif
-            AddLoaderToView(MainPanel);
+            await AddLoaderToView(MainPanel);
 
             // Casting view to layout panel
             var stackLayout = layout as StackLayout;
@@ -23,8 +23,7 @@ namespace KnoWhere
 
             Image image = new Image
             {
-                WidthRequest = 150,
-                HeightRequest = 150
+                Style = Application.Current.Resources["DefaultImageStyle"] as Style
             };
 
             // Retrieving the image from api
@@ -44,7 +43,7 @@ namespace KnoWhere
             Label suggestion = new Label
             {
                 Text = "How about " + place.Name + "?",
-                Margin = 15
+                Style = Application.Current.Resources["DefaultLabelStyle"] as Style
             };
 
             List<View> suggestionList = new List<View>()
@@ -62,13 +61,13 @@ namespace KnoWhere
             Button nextBtn = new Button()
             {
                 Text = "Next",
-                MinimumWidthRequest = 50
+                Style = Application.Current.Resources["DefaultButtonStyle"] as Style
             };
 
             Button interestedBtn = new Button()
             {
                 Text = "Interested",
-                MinimumWidthRequest = 50
+                Style = Application.Current.Resources["DefaultButtonStyle"] as Style
             };
 
             List<View> buttons = new List<View>()
@@ -83,8 +82,7 @@ namespace KnoWhere
 
             // Creating panel for the buttons
             var buttonsLayout = new StackLayout()
-            {
-                Padding = 15,
+            { 
                 Spacing = 10,
                 Orientation = StackOrientation.Horizontal,
                 HorizontalOptions = LayoutOptions.End
@@ -105,7 +103,7 @@ namespace KnoWhere
         private async void CreatePlaceDetailsSuggestion(View layout)
         {
             // Adding loader gif
-            AddLoaderToView(MainPanel);
+            await AddLoaderToView(MainPanel);
 
             // Casting view to layout panel
             var stackLayout = layout as StackLayout;
@@ -115,7 +113,7 @@ namespace KnoWhere
             Label suggestion = new Label
             {
                 Text = "What would you like to do ?",
-                Margin = 15
+                Style = Application.Current.Resources["DefaultLabelStyle"] as Style
             };
 
             // Ensure phone has value before adding a button
@@ -124,7 +122,7 @@ namespace KnoWhere
                 Button callBtn = new Button()
                 {
                     Text = "Call",
-                    MinimumWidthRequest = 50
+                    Style = Application.Current.Resources["DefaultButtonStyle"] as Style
                 };
                 callBtn.Clicked += CallBtn_Clicked;
                 buttons.Add(callBtn);
@@ -136,7 +134,7 @@ namespace KnoWhere
                 Button navigateBtn = new Button()
                 {
                     Text = "Navigate Me",
-                    MinimumWidthRequest = 50
+                    Style = Application.Current.Resources["DefaultButtonStyle"] as Style
                 };
                 navigateBtn.Clicked += NavigateBtn_Clicked;
                 buttons.Add(navigateBtn);
@@ -148,7 +146,7 @@ namespace KnoWhere
                 Button visitWebsiteBtn = new Button()
                 {
                     Text = "Visit Website",
-                    MinimumWidthRequest = 50
+                    Style = Application.Current.Resources["DefaultButtonStyle"] as Style
                 };
                 visitWebsiteBtn.Clicked += VisitWebsiteBtn_Clicked;
                 buttons.Add(visitWebsiteBtn);
@@ -156,8 +154,7 @@ namespace KnoWhere
              
             // Creating panel for the buttons
             var buttonsLayout = new StackLayout()
-            {
-                Padding = 15,
+            { 
                 Spacing = 10,
                 Orientation = StackOrientation.Horizontal,
                 HorizontalOptions = LayoutOptions.End
@@ -174,20 +171,7 @@ namespace KnoWhere
             stackLayout.Children.Add(buttonsLayout);
 
             // Adding loader gif with waiting time 
-            await Task.Run(() => 
-            {
-                Device.BeginInvokeOnMainThread(() =>
-                {
-                    // Casting view to layout panel
-                    MainPanel.Children.Add(loaderLayout);
-                });
-
-                // Holding background thread for specified milliseconds
-                Thread.Sleep(10000);
-            });
-
-            // Removing the loader gif
-            RemoveLoaderFromView(MainPanel);
+            await AddLoaderToView(MainPanel, 10000);
 
             // Incrementing place index
             currentPlaceIndex++;
@@ -204,11 +188,33 @@ namespace KnoWhere
             }
         }
 
-        private void AddLoaderToView(View layout)
+        private async Task AddLoaderToView(View layout, int? milliseconds = null)
         {
             // Casting view to layout panel
             var stackLayout = layout as StackLayout;
-            stackLayout.Children.Add(loaderLayout);
+
+            if (milliseconds.HasValue)
+            {
+                await Task.Run(() =>
+                {
+                    Device.BeginInvokeOnMainThread(() =>
+                    {
+                        // Casting view to layout panel
+                        MainPanel.Children.Add(loaderLayout);
+                    });
+
+                    // Holding background thread for specified milliseconds
+                    Thread.Sleep(milliseconds.Value);
+                });
+                 
+                // Removing the loader gif
+                RemoveLoaderFromView(MainPanel);
+            }
+            else
+            {
+                stackLayout.Children.Add(loaderLayout);
+            }
+            
         }
 
         private void RemoveLoaderFromView(View layout)
@@ -221,7 +227,7 @@ namespace KnoWhere
         private async Task<List<Place>> GeneratePlaces()
         {
             // Adding loader gif
-            AddLoaderToView(MainPanel);
+            await AddLoaderToView(MainPanel);
 
             double? longitude = null;
             double? latitude = null;

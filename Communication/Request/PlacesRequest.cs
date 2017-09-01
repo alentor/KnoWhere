@@ -49,7 +49,7 @@ namespace Communication
             {
                 var httpClient = new HttpClient(new NativeMessageHandler());
                 var queryString = ToQueryString();
-                var jsonResponse = await httpClient.GetStringAsync(ApiUri + queryString);
+                var jsonResponse = await httpClient.GetStringAsync(HttpAddress + queryString);
 
                 // Serializing to Jobject
                 var jsonObj = JObject.Parse(jsonResponse);
